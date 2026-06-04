@@ -15,15 +15,24 @@ Usage:
 
 import argparse
 import csv
+import json
 import multiprocessing as mp
+import os
+import re
+import subprocess
+import sys
 import time
 import traceback
+import urllib.request
+import warnings
 from pathlib import Path
+
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*weights_only.*")
 
 import numpy as np
 import torch
 from ase import constraints, units
-from ase.io import read as ase_read
+from ase.io import read as ase_read, write
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from mace.calculators import mace_polar
@@ -43,7 +52,7 @@ SYSTEMS = [
 ]
 
 ALL_MODELS = ["polar-1-s", "polar-1-m", "polar-1-l"]
-ALL_DTYPES = ["float32", "float64"]
+ALL_DTYPES = ["float32", "float16"]
 
 RESULT_FIELDS = [
     "system", "n_atoms", "model", "dtype", "device",
@@ -67,9 +76,6 @@ def load_atoms(sys_def: dict):
 
 def _worker(queue, system_name, model_name, dtype, device, n_warmup, n_steps):
     """Runs in a spawned child process; puts a result dict into queue."""
-    import warnings
-    warnings.filterwarnings("ignore", category=FutureWarning, message=".*weights_only.*")
-
     try:
         sys_def = next(s for s in SYSTEMS if s["name"] == system_name)
 
@@ -151,6 +157,83 @@ def run_isolated(system_name, model_name, dtype, device,
     return {"status": "error", "error": f"exit code {proc.exitcode}"}
 
 
+def collect_system_info() -> dict:
+    info: dict = {}
+
+    # ── Software ──────────────────────────────────────────────────────────────
+    info["python"]     = sys.version.split()[0]
+    info["torch"]      = torch.__version__
+    info["torch_cuda"] = torch.version.cuda or "N/A"
+
+    # ── GPU (torch + nvidia-smi) ──────────────────────────────────────────────
+    if torch.cuda.is_available():
+        props = torch.cuda.get_device_properties(0)
+        info["gpu_name"]                = props.name
+        info["gpu_vram_gib"]            = round(props.total_memory / 1024**3, 2)
+        info["gpu_compute_capability"]  = f"{props.major}.{props.minor}"
+        info["gpu_sm_count"]            = props.multi_processor_count
+        try:
+            r = subprocess.run(
+                ["nvidia-smi",
+                 "--query-gpu=driver_version,clocks.max.sm,clocks.max.memory",
+                 "--format=csv,noheader,nounits"],
+                capture_output=True, text=True, timeout=5,
+            )
+            if r.returncode == 0:
+                parts = [p.strip() for p in r.stdout.strip().split(",")]
+                if len(parts) >= 3:
+                    info["gpu_driver"]           = parts[0]
+                    info["gpu_max_sm_clock_mhz"] = parts[1]
+                    info["gpu_max_mem_clock_mhz"] = parts[2]
+        except Exception:
+            pass
+    else:
+        info["gpu_name"] = "none"
+
+    # ── CPU ───────────────────────────────────────────────────────────────────
+    info["cpu_logical_cores"] = os.cpu_count()
+    try:
+        cpuinfo = Path("/proc/cpuinfo").read_text()
+        for line in cpuinfo.splitlines():
+            if "model name" in line:
+                info["cpu_model"] = line.split(":", 1)[1].strip()
+                break
+        pairs = set(zip(
+            re.findall(r"physical id\s*:\s*(\d+)", cpuinfo),
+            re.findall(r"core id\s*:\s*(\d+)", cpuinfo),
+        ))
+        if pairs:
+            info["cpu_physical_cores"] = len(pairs)
+    except Exception:
+        pass
+    try:
+        freq = Path("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq").read_text()
+        info["cpu_max_freq_mhz"] = round(int(freq.strip()) / 1000, 1)
+    except Exception:
+        pass
+
+    # ── RAM ───────────────────────────────────────────────────────────────────
+    try:
+        for line in Path("/proc/meminfo").read_text().splitlines():
+            if line.startswith("MemTotal:"):
+                info["ram_total_gib"] = round(int(line.split()[1]) / 1024**2, 2)
+            elif line.startswith("MemAvailable:"):
+                info["ram_available_gib"] = round(int(line.split()[1]) / 1024**2, 2)
+    except Exception:
+        pass
+
+    # ── AWS instance type (metadata endpoint, timeout 2 s) ───────────────────
+    try:
+        with urllib.request.urlopen(
+            "http://169.254.169.254/latest/meta-data/instance-type", timeout=2
+        ) as r:
+            info["aws_instance_type"] = r.read().decode().strip()
+    except Exception:
+        info["aws_instance_type"] = "unknown"
+
+    return info
+
+
 def main():
     p = argparse.ArgumentParser(description="MACE-POLAR-1 throughput benchmark")
     p.add_argument("--devices",  nargs="+", default=None,
@@ -163,18 +246,18 @@ def main():
                    help="Warmup steps discarded before timing (default: 10)")
     p.add_argument("--n-steps",  type=int, default=50,
                    help="Steps timed per run (default: 50)")
-    p.add_argument("--timeout",  type=int, default=600,
-                   help="Per-run timeout in seconds (default: 600)")
+    p.add_argument("--max-step-time", type=float, default=10.0,
+                   help="Max wall-clock seconds allowed per step; "
+                        "total timeout = (n-warmup + n-steps) × this (default: 10)")
     p.add_argument("--out",      default="benchmark/results.csv")
     args = p.parse_args()
 
     if args.devices:
         devices = args.devices
     else:
-        devices = []
-        if torch.cuda.is_available():
-            devices.append("cuda:0")
-        devices.append("cpu")
+        if not torch.cuda.is_available():
+            raise SystemExit("No CUDA device found. Pass --devices cpu to run on CPU.")
+        devices = ["cuda:0"]
 
     systems = SYSTEMS
     if args.systems:
@@ -186,6 +269,8 @@ def main():
     for s in systems:
         if not Path(s["pdb"]).exists():
             raise SystemExit(f"Missing: {s['pdb']}")
+
+    timeout = int((args.n_warmup + args.n_steps) * args.max_step_time)
 
     out_path = PROJECT / args.out
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -205,7 +290,7 @@ def main():
 
                     row = run_isolated(
                         sys_def["name"], model_name, dtype, device,
-                        args.n_warmup, args.n_steps, args.timeout,
+                        args.n_warmup, args.n_steps, timeout,
                     )
 
                     if row.get("status") == "ok":
@@ -235,6 +320,12 @@ def main():
     n_err = len(results) - n_ok
     print(f"\nDone. {n_ok} ok, {n_err} failed.")
     print(f"Results saved → {out_path}")
+
+    sys_info = collect_system_info()
+    sys_info_path = out_path.with_name("system_info.json")
+    with open(sys_info_path, "w") as f:
+        json.dump(sys_info, f, indent=2)
+    print(f"System info  → {sys_info_path}")
 
 
 if __name__ == "__main__":
