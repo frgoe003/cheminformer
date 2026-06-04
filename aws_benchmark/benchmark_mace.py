@@ -14,7 +14,6 @@ Usage:
 
 import argparse
 import csv
-import sys
 import time
 import traceback
 from pathlib import Path
@@ -27,8 +26,7 @@ from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from mace.calculators import mace_polar
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_md_mace_polar import read_pdb_vacuum, _has_element_col
+from aws_benchmark.run_md_mace_polar import read_pdb_vacuum, _has_element_col
 
 PROJECT     = Path(__file__).resolve().parent
 SYSTEMS_DIR = PROJECT / "benchmark" / "systems"
@@ -37,7 +35,7 @@ SYSTEMS_DIR = PROJECT / "benchmark" / "systems"
 SYSTEMS = [
     dict(name="capped_ala", pdb=SYSTEMS_DIR / "capped_ala.pdb",  charge=0, spin=1),
     dict(name="chignolin",  pdb=SYSTEMS_DIR / "chignolin.pdb",   charge=0, spin=1),
-    dict(name="ubiquitin",  pdb=SYSTEMS_DIR / "ubiquitin_H.pdb", charge=0, spin=1),
+    dict(name="ubiquitin",  pdb=SYSTEMS_DIR / "ubiquitin.pdb", charge=0, spin=1),
 ]
 
 ALL_MODELS = ["polar-1-s", "polar-1-m", "polar-1-l"]

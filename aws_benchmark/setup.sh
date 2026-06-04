@@ -104,7 +104,8 @@ conda run -n "$ENV_NAME" pip install \
     ase \
     matplotlib \
     scipy \
-    numpy
+    numpy \ 
+    cuequivariance_torch
 
 #############################################
 # 8. Verify installation
@@ -122,3 +123,5 @@ print("ase:", ase.__version__)
 EOF
 
 echo "[INFO] Setup complete."
+
+source "$HOME/miniconda3/etc/profile.d/conda.sh"
