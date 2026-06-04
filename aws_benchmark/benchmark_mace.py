@@ -28,6 +28,14 @@ import warnings
 from pathlib import Path
 
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*weights_only.*")
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+
+import logging
+logging.getLogger().addFilter(
+    type("_DtypeFilter", (logging.Filter,), {
+        "filter": staticmethod(lambda r: "does not match model dtype" not in r.getMessage())
+    })()
+)
 
 import numpy as np
 import torch
@@ -46,13 +54,18 @@ PROJECT     = Path(__file__).resolve().parent
 SYSTEMS_DIR = PROJECT / "mols"
 
 SYSTEMS = [
-    dict(name="capped_ala", pdb=SYSTEMS_DIR / "capped_ala.pdb",  charge=0, spin=1),
-    dict(name="chignolin",  pdb=SYSTEMS_DIR / "chignolin.pdb",   charge=0, spin=1),
-    dict(name="ubiquitin",  pdb=SYSTEMS_DIR / "ubiquitin.pdb",   charge=0, spin=1),
+    dict(name="capped_ala",   pdb=SYSTEMS_DIR / "capped_ala_22.pdb",    charge=0, spin=1),
+    dict(name="chignolin",    pdb=SYSTEMS_DIR / "chignolin_138.pdb",    charge=0, spin=1),
+    dict(name="ubiquitin",    pdb=SYSTEMS_DIR / "ubiquitin_602.pdb",    charge=0, spin=1),
+    dict(name="1MBN",         pdb=SYSTEMS_DIR / "1MBN_1p2k.pdb",        charge=0, spin=1),
+    dict(name="1ZG4",         pdb=SYSTEMS_DIR / "1ZG4_2p2k.pdb",        charge=0, spin=1),
+    dict(name="heme_complex", pdb=SYSTEMS_DIR / "heme_complex_5k.pdb",  charge=0, spin=1),
+    dict(name="5G1P",         pdb=SYSTEMS_DIR / "5G1P_13k.pdb",         charge=0, spin=1),
+    dict(name="1Q95",         pdb=SYSTEMS_DIR / "1Q95_20k.pdb",         charge=0, spin=1),
 ]
 
 ALL_MODELS = ["polar-1-s", "polar-1-m", "polar-1-l"]
-ALL_DTYPES = ["float32", "float16"]
+ALL_DTYPES = ["float32"]
 
 RESULT_FIELDS = [
     "system", "n_atoms", "model", "dtype", "device",
