@@ -26,10 +26,14 @@ from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from mace.calculators import mace_polar
 
-from aws_benchmark.run_md_mace_polar import read_pdb_vacuum, _has_element_col
+try:
+    from aws_benchmark.run_md_mace_polar import read_pdb_vacuum, _has_element_col
+except ModuleNotFoundError:
+    # Allow running from within the aws_benchmark directory.
+    from run_md_mace_polar import read_pdb_vacuum, _has_element_col
 
 PROJECT     = Path(__file__).resolve().parent
-SYSTEMS_DIR = PROJECT / "benchmark" / "systems"
+SYSTEMS_DIR = PROJECT / "mols"
 
 # charge/spin are approximations — only throughput matters here
 SYSTEMS = [
@@ -131,10 +135,7 @@ def main():
     # Check all PDB files exist
     for s in systems:
         if not Path(s["pdb"]).exists():
-            raise SystemExit(
-                f"Missing: {s['pdb']}\n"
-                "Run create_benchmark.sh first to prepare all system files."
-            )
+            raise SystemExit(f"Missing: {s['pdb']}")
 
     out_path = PROJECT / args.out
     out_path.parent.mkdir(parents=True, exist_ok=True)

@@ -104,8 +104,8 @@ conda run -n "$ENV_NAME" pip install \
     ase \
     matplotlib \
     scipy \
-    numpy \ 
-    cuequivariance_torch
+    numpy \
+    cuequivariance_torch \ 
 
 #############################################
 # 8. Verify installation
