@@ -12,8 +12,8 @@ from pathlib import Path
 
 import matplotlib
 matplotlib.use('Agg')
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
 from ase import Atoms, constraints, units
 from ase.io import read as ase_read
@@ -22,72 +22,8 @@ from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from mace.calculators import mace_polar
 
-# ── CLI ───────────────────────────────────────────────────────────────────────
-def _parse_args():
-    p = argparse.ArgumentParser(description="Vacuum MD with MACE-POLAR-1")
-    p.add_argument("--pdb", default=None,
-                   help="Path to input PDB (default: mols/capped_ala.pdb next to this script)")
-    p.add_argument("--device", default="cuda:0",
-                   help="PyTorch device string: 'cpu', 'cuda', 'cuda:0', … (default: cuda:0)")
-    p.add_argument("--model", default="polar-1-s",
-                   choices=["polar-1-s", "polar-1-m", "polar-1-l"],
-                   help="MACE-POLAR-1 checkpoint size (default: polar-1-s)")
-    p.add_argument("--steps", type=int, default=50,
-                   help="Number of MD steps (default: 50)")
-    p.add_argument("--temperature", type=float, default=300.0,
-                   help="Langevin temperature in K (default: 300)")
-    p.add_argument("--dtype", default="float32", choices=["float32", "float64"],
-                   help="Floating-point precision (default: float32)")
-    p.add_argument("--charge", type=int, default=0,
-                   help="Net charge of the system (default: 0)")
-    p.add_argument("--spin", type=int, default=1,
-                   help="Spin multiplicity (default: 1)")
-    p.add_argument("--write-every", type=int, default=10, metavar="N",
-                   help="Write trajectory frame every N steps (default: 10)")
-    p.add_argument("--log-every", type=int, default=1, metavar="N",
-                   help="Print energy every N steps (default: 1)")
-    p.add_argument("--track-dihedrals", action="store_true",
-                   help="Track phi/psi dihedrals and plot FES (capped_ala only)")
-    p.add_argument("--no-cueq", action="store_true",
-                   help="Disable cuEquivariance acceleration")
-    return p.parse_args()
+# ── PDB readers (imported by benchmark_mace.py) ───────────────────────────────
 
-args = _parse_args()
-
-# Resolve PDB path
-PROJECT = Path(__file__).resolve().parent
-if args.pdb is None:
-    PDB = PROJECT / "mols" / "capped_ala.pdb"
-else:
-    PDB = Path(args.pdb).resolve()
-
-if not PDB.exists():
-    raise SystemExit(f"PDB not found: {PDB}")
-
-# Resolve device
-if args.device.startswith("cuda") and not torch.cuda.is_available():
-    raise SystemExit("CUDA requested but not available — use --device cpu")
-if args.device == "cuda":
-    args.device = "cuda:0"
-if args.device.startswith("cuda"):
-    torch.cuda.set_device(torch.device(args.device))
-    torch.backends.cuda.matmul.allow_tf32 = True
-    torch.backends.cudnn.benchmark = True
-
-# ── Output directory ──────────────────────────────────────────────────────────
-OUT = PROJECT / "output" / PDB.stem
-OUT.mkdir(parents=True, exist_ok=True)
-
-# ── cuEquivariance ────────────────────────────────────────────────────────────
-try:
-    import cuequivariance_torch as _cueq_ops
-    _ops_available = hasattr(_cueq_ops, "segmented_polynomial")
-except ImportError:
-    _ops_available = False
-
-ENABLE_CUEQ = not args.no_cueq and _ops_available
-
-# ── PDB reader ────────────────────────────────────────────────────────────────
 def _has_element_col(path: Path) -> bool:
     with open(path) as f:
         for line in f:
@@ -165,66 +101,120 @@ def plot_fes(phi, psi, temperature_K, out_path, bins=18):
     print(f"Saved → {out_path}")
     plt.close()
 
-# ── Setup ─────────────────────────────────────────────────────────────────────
-atoms = read_structure(PDB)
-atoms.info["charge"]         = args.charge
-atoms.info["spin"]           = args.spin
-atoms.info["external_field"] = [0.0, 0.0, 0.0]
 
-calc = mace_polar(model=args.model, device=args.device,
-                  default_dtype=args.dtype, enable_cueq=ENABLE_CUEQ)
-atoms.calc = calc
+if __name__ == "__main__":
+    def _parse_args():
+        p = argparse.ArgumentParser(description="Vacuum MD with MACE-POLAR-1")
+        p.add_argument("--pdb", default=None,
+                       help="Path to input PDB (default: mols/capped_ala.pdb next to this script)")
+        p.add_argument("--device", default="cuda:0",
+                       help="PyTorch device string: 'cpu', 'cuda', 'cuda:0', … (default: cuda:0)")
+        p.add_argument("--model", default="polar-1-s",
+                       choices=["polar-1-s", "polar-1-m", "polar-1-l"],
+                       help="MACE-POLAR-1 checkpoint size (default: polar-1-s)")
+        p.add_argument("--steps", type=int, default=50,
+                       help="Number of MD steps (default: 50)")
+        p.add_argument("--temperature", type=float, default=300.0,
+                       help="Langevin temperature in K (default: 300)")
+        p.add_argument("--dtype", default="float32", choices=["float32", "float64"],
+                       help="Floating-point precision (default: float32)")
+        p.add_argument("--charge", type=int, default=0,
+                       help="Net charge of the system (default: 0)")
+        p.add_argument("--spin", type=int, default=1,
+                       help="Spin multiplicity (default: 1)")
+        p.add_argument("--write-every", type=int, default=10, metavar="N",
+                       help="Write trajectory frame every N steps (default: 10)")
+        p.add_argument("--log-every", type=int, default=1, metavar="N",
+                       help="Print energy every N steps (default: 1)")
+        p.add_argument("--track-dihedrals", action="store_true",
+                       help="Track phi/psi dihedrals and plot FES (capped_ala only)")
+        p.add_argument("--no-cueq", action="store_true",
+                       help="Disable cuEquivariance acceleration")
+        return p.parse_args()
 
-MaxwellBoltzmannDistribution(atoms, temperature_K=args.temperature,
-                             rng=np.random.default_rng(42))
-atoms.set_constraint(constraints.FixCom())
+    args = _parse_args()
 
-dyn = Langevin(atoms, timestep=1 * units.fs, temperature_K=args.temperature,
-               friction=0.01 / units.fs, fixcm=False)
+    PROJECT = Path(__file__).resolve().parent
+    PDB = PROJECT / "mols" / "capped_ala.pdb" if args.pdb is None else Path(args.pdb).resolve()
 
-phi_traj: list[float] = []
-psi_traj: list[float] = []
-traj_file = str(OUT / f"{PDB.stem}.xyz")
-_step_counter = [0]
+    if not PDB.exists():
+        raise SystemExit(f"PDB not found: {PDB}")
 
-def _collect():
-    _step_counter[0] += 1
-    step = _step_counter[0]
-    if args.track_dihedrals:
-        pos = atoms.get_positions()
-        phi_traj.append(dihedral_angle(*[pos[i] for i in PHI_IDX]))
-        psi_traj.append(dihedral_angle(*[pos[i] for i in PSI_IDX]))
-    if step % args.log_every == 0:
-        epot = atoms.get_potential_energy()
-        ekin = atoms.get_kinetic_energy()
-        T    = ekin / (1.5 * len(atoms) * units.kB)
-        dih  = (f"  φ={phi_traj[-1]:7.2f}°  ψ={psi_traj[-1]:7.2f}°"
-                if args.track_dihedrals else "")
-        print(f"  step {step:6d}  Epot={epot:.4f} eV  Ekin={ekin:.4f} eV  T={T:.1f} K{dih}")
+    if args.device.startswith("cuda") and not torch.cuda.is_available():
+        raise SystemExit("CUDA requested but not available — use --device cpu")
+    if args.device == "cuda":
+        args.device = "cuda:0"
+    if args.device.startswith("cuda"):
+        torch.cuda.set_device(torch.device(args.device))
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.benchmark = True
 
-dyn.attach(_collect, interval=1)
-dyn.attach(lambda: write(traj_file, atoms, append=True), interval=args.write_every)
+    OUT = PROJECT / "output" / PDB.stem
+    OUT.mkdir(parents=True, exist_ok=True)
 
-# ── Run ───────────────────────────────────────────────────────────────────────
-if args.device.startswith("cuda"):
-    idx = torch.device(args.device).index or 0
-    gpu_name = torch.cuda.get_device_name(idx)
-    print(f"Device: {args.device}  ({gpu_name})")
-else:
-    print(f"Device: {args.device}")
-print(f"System: {PDB.name}  ({len(atoms)} atoms)")
-print(f"Model : {args.model}  (CuEq={'on' if ENABLE_CUEQ else 'off'}, dtype={args.dtype})")
-print(f"Steps : {args.steps}  |  write every {args.write_every}  |  log every {args.log_every}\n")
+    try:
+        import cuequivariance_torch as _cueq_ops
+        _ops_available = hasattr(_cueq_ops, "segmented_polynomial")
+    except ImportError:
+        _ops_available = False
+    ENABLE_CUEQ = not args.no_cueq and _ops_available
 
-dyn.run(args.steps)
+    atoms = read_structure(PDB)
+    atoms.info["charge"]         = args.charge
+    atoms.info["spin"]           = args.spin
+    atoms.info["external_field"] = [0.0, 0.0, 0.0]
 
-# ── Save & plot ───────────────────────────────────────────────────────────────
-if args.track_dihedrals and phi_traj:
-    phi_arr = np.array(phi_traj)
-    psi_arr = np.array(psi_traj)
-    np.savetxt(OUT / "dihedrals.csv",
-               np.column_stack([phi_arr, psi_arr]),
-               header="phi_deg,psi_deg", delimiter=",", comments="")
-    plot_fes(phi_arr, psi_arr, args.temperature, out_path=OUT / "dihedral_fes.png")
+    calc = mace_polar(model=args.model, device=args.device,
+                      default_dtype=args.dtype, enable_cueq=ENABLE_CUEQ)
+    atoms.calc = calc
 
-print("Trajectory saved →", traj_file)
+    MaxwellBoltzmannDistribution(atoms, temperature_K=args.temperature,
+                                 rng=np.random.default_rng(42))
+    atoms.set_constraint(constraints.FixCom())
+
+    dyn = Langevin(atoms, timestep=1 * units.fs, temperature_K=args.temperature,
+                   friction=0.01 / units.fs, fixcm=False)
+
+    phi_traj: list[float] = []
+    psi_traj: list[float] = []
+    traj_file = str(OUT / f"{PDB.stem}.xyz")
+    _step_counter = [0]
+
+    def _collect():
+        _step_counter[0] += 1
+        step = _step_counter[0]
+        if args.track_dihedrals:
+            pos = atoms.get_positions()
+            phi_traj.append(dihedral_angle(*[pos[i] for i in PHI_IDX]))
+            psi_traj.append(dihedral_angle(*[pos[i] for i in PSI_IDX]))
+        if step % args.log_every == 0:
+            epot = atoms.get_potential_energy()
+            ekin = atoms.get_kinetic_energy()
+            T    = ekin / (1.5 * len(atoms) * units.kB)
+            dih  = (f"  φ={phi_traj[-1]:7.2f}°  ψ={psi_traj[-1]:7.2f}°"
+                    if args.track_dihedrals else "")
+            print(f"  step {step:6d}  Epot={epot:.4f} eV  Ekin={ekin:.4f} eV  T={T:.1f} K{dih}")
+
+    dyn.attach(_collect, interval=1)
+    dyn.attach(lambda: write(traj_file, atoms, append=True), interval=args.write_every)
+
+    if args.device.startswith("cuda"):
+        idx = torch.device(args.device).index or 0
+        print(f"Device: {args.device}  ({torch.cuda.get_device_name(idx)})")
+    else:
+        print(f"Device: {args.device}")
+    print(f"System: {PDB.name}  ({len(atoms)} atoms)")
+    print(f"Model : {args.model}  (CuEq={'on' if ENABLE_CUEQ else 'off'}, dtype={args.dtype})")
+    print(f"Steps : {args.steps}  |  write every {args.write_every}  |  log every {args.log_every}\n")
+
+    dyn.run(args.steps)
+
+    if args.track_dihedrals and phi_traj:
+        phi_arr = np.array(phi_traj)
+        psi_arr = np.array(psi_traj)
+        np.savetxt(OUT / "dihedrals.csv",
+                   np.column_stack([phi_arr, psi_arr]),
+                   header="phi_deg,psi_deg", delimiter=",", comments="")
+        plot_fes(phi_arr, psi_arr, args.temperature, out_path=OUT / "dihedral_fes.png")
+
+    print("Trajectory saved →", traj_file)

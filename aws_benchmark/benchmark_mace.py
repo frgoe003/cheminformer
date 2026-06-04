@@ -67,6 +67,9 @@ def load_atoms(sys_def: dict):
 
 def _worker(queue, system_name, model_name, dtype, device, n_warmup, n_steps):
     """Runs in a spawned child process; puts a result dict into queue."""
+    import warnings
+    warnings.filterwarnings("ignore", category=FutureWarning, message=".*weights_only.*")
+
     try:
         sys_def = next(s for s in SYSTEMS if s["name"] == system_name)
 
@@ -87,8 +90,17 @@ def _worker(queue, system_name, model_name, dtype, device, n_warmup, n_steps):
         dyn = Langevin(atoms, timestep=units.fs, temperature_K=300.0,
                        friction=0.01 / units.fs, fixcm=False)
 
+        # ── Warmup (not timed, trajectory written here for validation) ────────
+        device_str = device.replace(":", "")
+        traj_path  = (PROJECT / "benchmark" / "trajectories" /
+                      f"{system_name}_{model_name}_{dtype}_{device_str}.xyz")
+        traj_path.parent.mkdir(parents=True, exist_ok=True)
+
+        dyn.attach(lambda: write(str(traj_path), atoms, append=True), interval=10)
         dyn.run(n_warmup)
 
+        # ── Timed run (pure compute, no extra I/O) ────────────────────────────
+        dyn.observers.clear()   # detach trajectory writer
         if device.startswith("cuda"):
             torch.cuda.synchronize()
         t0 = time.perf_counter()
