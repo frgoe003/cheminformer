@@ -2,3 +2,5 @@ ff_param/
 claude.md
 .DS_Store
 *.pem
+src/
+*.xyz
