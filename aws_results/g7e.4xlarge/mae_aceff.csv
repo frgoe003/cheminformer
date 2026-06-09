@@ -1,0 +1,3 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+AceFF-1.1,float32,cuda:0,800,15.2169,3.6369,0.157712,ok,
+AceFF-2.0,float32,cuda:0,800,14.8624,3.5522,0.154038,ok,

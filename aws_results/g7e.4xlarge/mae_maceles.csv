@@ -1,0 +1,2 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+MACELES-OFF,float32,cuda:0,799,7.9953,1.9109,0.082865,ok,

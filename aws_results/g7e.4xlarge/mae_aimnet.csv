@@ -1,0 +1,2 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+AIMNet2,float32,cuda:0,800,10.6915,2.5553,0.110809,ok,

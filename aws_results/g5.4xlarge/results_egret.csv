@@ -1,0 +1,13 @@
+system,n_atoms,model,dtype,device,n_warmup,n_steps,elapsed_s,steps_per_s,ms_per_step,vram_mib,status,error
+capped_ala,22,Egret-1,float32,cuda:0,100,100,3.4877,28.67,34.88,226.0,ok,
+chignolin,138,Egret-1,float32,cuda:0,100,100,9.4121,10.62,94.12,2082.0,ok,
+ubiquitin,602,Egret-1,float32,cuda:0,100,100,31.6486,3.16,316.49,6920.0,ok,
+2LZM,1427,Egret-1,float32,cuda:0,100,100,76.2322,1.31,762.32,18062.0,ok,
+1ZG4,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+3N5G,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+5G1P,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+1B3B,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+9VM6,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+water_99k,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+water_199k,?,Egret-1,float32,cuda:0,100,100,,,,,error,
+water_499k,?,Egret-1,float32,cuda:0,100,100,,,,,error,

@@ -1,0 +1,2 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+Egret-1,float32,cuda:0,799,7.1433,1.7073,0.074035,ok,

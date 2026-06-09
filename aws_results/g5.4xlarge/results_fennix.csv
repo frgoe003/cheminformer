@@ -1,0 +1,25 @@
+system,n_atoms,model,dtype,device,n_warmup,n_steps,elapsed_s,steps_per_s,ms_per_step,vram_mib,status,error
+capped_ala,22,FeNNix-Bio1(S),float32,cuda:0,100,100,0.4514,221.51,4.51,0.0,ok,
+chignolin,138,FeNNix-Bio1(S),float32,cuda:0,100,100,0.5134,194.76,5.13,0.0,ok,
+ubiquitin,602,FeNNix-Bio1(S),float32,cuda:0,100,100,18.9913,5.27,189.91,0.0,ok,
+2LZM,1427,FeNNix-Bio1(S),float32,cuda:0,100,100,43.1841,2.32,431.84,0.0,ok,
+1ZG4,2224,FeNNix-Bio1(S),float32,cuda:0,100,100,61.1023,1.64,611.02,0.0,ok,
+3N5G,2304,FeNNix-Bio1(S),float32,cuda:0,100,100,67.9778,1.47,679.78,0.0,ok,
+5G1P,13193,FeNNix-Bio1(S),float32,cuda:0,100,100,42.5066,2.35,425.07,0.0,ok,
+1B3B,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,error,jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: [0] Failed to load in-memory CUBIN (compiled for a different GPU?).: CUDA_ERROR_OUT_OF_MEMORY: out of memory [executable_name='jit_process']
+9VM6,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+water_99k,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+water_199k,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+water_499k,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+capped_ala,22,FeNNix-Bio1(M),float32,cuda:0,100,100,0.433,230.94,4.33,0.0,ok,
+chignolin,138,FeNNix-Bio1(M),float32,cuda:0,100,100,0.5336,187.4,5.34,0.0,ok,
+ubiquitin,602,FeNNix-Bio1(M),float32,cuda:0,100,100,19.5148,5.12,195.15,0.0,ok,
+2LZM,1427,FeNNix-Bio1(M),float32,cuda:0,100,100,20.7119,4.83,207.12,0.0,ok,
+1ZG4,2224,FeNNix-Bio1(M),float32,cuda:0,100,100,21.4163,4.67,214.16,0.0,ok,
+3N5G,2304,FeNNix-Bio1(M),float32,cuda:0,100,100,22.3361,4.48,223.36,0.0,ok,
+5G1P,13193,FeNNix-Bio1(M),float32,cuda:0,100,100,44.5898,2.24,445.9,0.0,ok,
+1B3B,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,error,jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: [0] Failed to load in-memory CUBIN (compiled for a different GPU?).: CUDA_ERROR_OUT_OF_MEMORY: out of memory [executable_name='jit_process']
+9VM6,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+water_99k,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+water_199k,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system
+water_499k,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,skipped,OOM on 19008-atom system

@@ -1,0 +1,3 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+UMA-s-1,float32,cuda:0,800,2.4404,0.5833,0.025293,ok,
+UMA-m-1,float32,cuda:0,800,2.2247,0.5317,0.023058,ok,

@@ -1,0 +1,2 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+Orb-v3-omol,float32,cuda:0,800,2.9458,0.7041,0.030531,ok,

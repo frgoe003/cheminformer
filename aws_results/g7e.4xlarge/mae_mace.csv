@@ -1,0 +1,9 @@
+model,dtype,device,n_molecules,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+polar-1-s,float32,cuda:0,799,7.1504,1.709,0.074109,ok,
+polar-1-m,float32,cuda:0,799,4.0143,0.9594,0.041606,ok,
+polar-1-l,float32,cuda:0,799,3.5347,0.8448,0.036634,ok,
+MACE-OFF23(S),float32,cuda:0,799,15.5503,3.7166,0.161167,ok,
+MACE-OFF23(L),float32,cuda:0,799,7.0549,1.6862,0.073119,ok,
+MACE-OFF24(M),float32,cuda:0,799,8.007,1.9137,0.082987,ok,
+MACE-MH-1,float32,cuda:0,800,5.9507,1.4223,0.061675,ok,
+MACE-OMOL-0,float32,cuda:0,800,3.3114,0.7914,0.03432,ok,
