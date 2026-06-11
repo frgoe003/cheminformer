@@ -41,7 +41,8 @@ run_category ase-uma      run_uma.py      results_uma.csv      "$@"
 run_category ase-aimnet   run_aimnet.py   results_aimnet.csv   "$@"
 run_category ase-fennix   run_fennix.py   results_fennix.csv   "$@"
 run_category ase-orb      run_orb.py      results_orb.csv      "$@"
-run_category ase-openmm   run_openmm.py   results_openmm.csv   "$@"
+run_category ase-openmm   run_openmm.py      results_openmm.csv      "$@"
+run_category openmm-ml    run_openmm_ml.py   results_openmm_ml.csv   "$@"
 
 # ── Merge MD results ──────────────────────────────────────────────────────────
 echo ""

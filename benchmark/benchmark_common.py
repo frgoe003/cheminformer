@@ -18,6 +18,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import time
 import traceback
 import warnings
@@ -75,7 +76,7 @@ _ALL_Z     = frozenset(range(1, 90))
 RESULT_FIELDS = [
     "system", "n_atoms", "model", "dtype", "device",
     "n_warmup", "n_steps", "elapsed_s", "steps_per_s", "ms_per_step",
-    "vram_mib", "status", "error",
+    "vram_mib", "avg_power_w", "peak_power_w", "status", "error",
 ]
 MAE_RESULT_FIELDS = [
     "model", "dtype", "device", "n_molecules", "mae_kj_mol", "mae_kcal_mol", "mae_ev",
@@ -132,6 +133,23 @@ def load_atoms(sys_def: dict) -> Atoms:
 # Both workers import __main__ to call the per-category create_calculator and
 # the optional configure_atoms hook.
 
+def _sample_gpu_power(stop_event: threading.Event, samples: list,
+                      device_index: int = 0, interval: float = 0.2) -> None:
+    """Background thread: polls nvidia-smi for power.draw until stop_event is set."""
+    while not stop_event.is_set():
+        try:
+            r = subprocess.run(
+                ["nvidia-smi", f"--id={device_index}",
+                 "--query-gpu=power.draw", "--format=csv,noheader,nounits"],
+                capture_output=True, text=True, timeout=2,
+            )
+            if r.returncode == 0:
+                samples.append(float(r.stdout.strip()))
+        except Exception:
+            pass
+        stop_event.wait(interval)
+
+
 def _worker(queue, system_name, model_name, dtype, device, n_warmup, n_steps):
     try:
         import __main__
@@ -175,25 +193,48 @@ def _worker(queue, system_name, model_name, dtype, device, n_warmup, n_steps):
         dyn.observers.clear()
         if device.startswith("cuda"):
             torch.cuda.synchronize()
+
+        power_samples: list = []
+        power_stop    = threading.Event()
+        if device.startswith("cuda"):
+            gpu_idx = int(device.split(":")[-1]) if ":" in device else 0
+            power_thread = threading.Thread(
+                target=_sample_gpu_power,
+                args=(power_stop, power_samples, gpu_idx, 0.2),
+                daemon=True,
+            )
+            power_thread.start()
+        else:
+            power_thread = None
+
         t0 = time.perf_counter()
         dyn.run(n_steps)
         if device.startswith("cuda"):
             torch.cuda.synchronize()
         elapsed = time.perf_counter() - t0
 
+        if power_thread is not None:
+            power_stop.set()
+            power_thread.join(timeout=2.0)
+
+        avg_power  = round(float(np.mean(power_samples)),  1) if power_samples else ""
+        peak_power = round(float(np.max(power_samples)), 1) if power_samples else ""
+
         mem_after = (torch.cuda.memory_reserved(torch.device(device))
                      if device.startswith("cuda") else 0)
         vram_mib  = round((mem_after - mem_before) / 1024**2, 1)
 
         queue.put({
-            "system":      system_name,
-            "n_atoms":     len(atoms),
-            "elapsed_s":   round(elapsed, 4),
-            "steps_per_s": round(n_steps / elapsed, 2),
-            "ms_per_step": round(1000 * elapsed / n_steps, 2),
-            "vram_mib":    vram_mib,
-            "status":      "ok",
-            "error":       "",
+            "system":       system_name,
+            "n_atoms":      len(atoms),
+            "elapsed_s":    round(elapsed, 4),
+            "steps_per_s":  round(n_steps / elapsed, 2),
+            "ms_per_step":  round(1000 * elapsed / n_steps, 2),
+            "vram_mib":     vram_mib,
+            "avg_power_w":  avg_power,
+            "peak_power_w": peak_power,
+            "status":       "ok",
+            "error":        "",
         })
     except Exception:
         queue.put({"status": "error", "error": traceback.format_exc().splitlines()[-1]})
@@ -472,8 +513,10 @@ def run_benchmark(all_models: list, supported_elements_fn, default_out: str):
                         row.setdefault("elapsed_s",   "")
                         row.setdefault("steps_per_s", "")
                         row.setdefault("ms_per_step", "")
-                        row.setdefault("vram_mib",    "")
-                        row.setdefault("error",       "")
+                        row.setdefault("vram_mib",     "")
+                        row.setdefault("avg_power_w",  "")
+                        row.setdefault("peak_power_w", "")
+                        row.setdefault("error",        "")
                         results.append(row)
 
         with open(out_path, "w", newline="") as f:
