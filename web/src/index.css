@@ -888,6 +888,12 @@ body {
   border-top: 1px solid #f3f4f6;
   margin: 10px 0 8px;
 }
+.speed-tooltip__footnote {
+  margin-top: 8px;
+  font-size: 9px;
+  color: #c3c8d0;
+  text-align: right;
+}
 .speed-tooltip__section-label {
   font-size: 10px;
   color: #9ca3af;

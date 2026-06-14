@@ -2,13 +2,17 @@ import { useState } from "react";
 import type { ResultRow, GpuId } from "../data";
 import { PERF_SYSTEMS, MODEL_LABEL, GPU_INSTANCES, GPU_ORDER } from "../data";
 
-// AWS on-demand prices (us-east-1, Linux), sourced June 2026 via instances.vantage.sh
+// AWS prices, US East 1 (N. Virginia), Linux, as of 15 Jun 2026
 const GPU_PRICE_PER_HR: Record<GpuId, number> = {
-  g7e: 3.99816,
+  g7e: 4.02616,
   g6e: 3.00424,
   g5:  1.624,
 };
-const SPOT_FRACTION = 0.20;
+const GPU_SPOT_PRICE_PER_HR: Record<GpuId, number> = {
+  g7e: 1.6789,
+  g6e: 1.5967,
+  g5:  0.7107,
+};
 const STEPS_PER_NS = 1_000_000; // 1 fs timestep (ASE units.fs)
 
 type Metric = "ms_per_step" | "vram_mib";
@@ -17,8 +21,8 @@ function nsPerDay(msPerStep: number) {
   return (1000 / msPerStep * 86_400) / STEPS_PER_NS;
 }
 
-function costFor100ns(msPerStep: number, gpu: GpuId) {
-  return (100 / nsPerDay(msPerStep)) * 24 * GPU_PRICE_PER_HR[gpu];
+function costFor100ns(msPerStep: number, pricePerHr: number) {
+  return (100 / nsPerDay(msPerStep)) * 24 * pricePerHr;
 }
 
 function fmtNsDay(v: number) {
@@ -94,7 +98,8 @@ interface TooltipData { model: string; system: string; nAtoms: number; value: nu
 
 function SpeedTooltip({ data, pos, gpu }: { data: TooltipData; pos: { x: number; y: number }; gpu: GpuId }) {
   const nd  = nsPerDay(data.value);
-  const cod = costFor100ns(data.value, gpu);
+  const cod = costFor100ns(data.value, GPU_PRICE_PER_HR[gpu]);
+  const cos = costFor100ns(data.value, GPU_SPOT_PRICE_PER_HR[gpu]);
   return (
     <div className="speed-tooltip" style={{ left: pos.x + 16, top: pos.y - 16 }}>
       <div className="speed-tooltip__header">
@@ -119,10 +124,11 @@ function SpeedTooltip({ data, pos, gpu }: { data: TooltipData; pos: { x: number;
           <span className="speed-tooltip__value speed-tooltip__value--cost">{fmtCost(cod)}</span>
         </div>
         <div className="speed-tooltip__row">
-          <span className="speed-tooltip__label">Spot (est.)</span>
-          <span className="speed-tooltip__value speed-tooltip__value--spot">{fmtCost(cod * SPOT_FRACTION)}</span>
+          <span className="speed-tooltip__label">Spot</span>
+          <span className="speed-tooltip__value speed-tooltip__value--spot">{fmtCost(cos)}</span>
         </div>
       </div>
+      <div className="speed-tooltip__footnote">prices as of 15 Jun 2026 · US East 1 (N. Virginia)</div>
     </div>
   );
 }

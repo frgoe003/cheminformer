@@ -78,7 +78,7 @@ export default function App() {
             <div className="page-section-label">Speed Benchmark</div>
             <div className="card">
               <div className="section-subtitle">
-                NVT MD simulation · 100 warmup + 100 production steps · ms per step
+                NVT MD simulation on AWS EC2 · 100 warmup + 100 production steps · ms per step
               </div>
               {Object.keys(perfByGpu).length === 0
                 ? <div className="chart-loading"><Spinner /> Loading…</div>
