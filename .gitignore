@@ -4,3 +4,9 @@ claude.md
 *.pem
 src/
 *.xyz
+cost.md
+__pycache__/
+.DS_Store
+.claude
+web/node_modules/
+web/dist/
