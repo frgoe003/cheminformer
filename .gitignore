@@ -2,7 +2,6 @@ ff_param/
 claude.md
 .DS_Store
 *.pem
-src/
 *.xyz
 cost.md
 __pycache__/
@@ -10,3 +9,4 @@ __pycache__/
 .claude
 web/node_modules/
 web/dist/
+src_/
