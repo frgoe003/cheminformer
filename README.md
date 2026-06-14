@@ -1,6 +1,6 @@
 # MLIP Benchmark
 
-Speed and accuracy benchmark of foundational machine learning interatomic potentials (MLIPs) for biomolecular simulation.
+Speed and accuracy benchmark of foundational machine learning interatomic potentials (MLIPs) for biomolecular simulation, following the protocol of [Eastman et al. (2026)](#references).
 
 **[→ Interactive results](https://frgoe003.github.io/cheminformer/)**
 
@@ -31,3 +31,7 @@ bash benchmark/setup.sh
 conda activate ase-mace
 python benchmark/run_mace.py
 ```
+
+## References
+
+Eastman, P., Pretti, E., & Markland, T. E. (2026). Accuracy and Efficiency Benchmarks of Pretrained Machine Learning Potentials for Molecular Simulations. *Journal of Chemical Theory and Computation*. https://doi.org/10.1021/acs.jctc.6c00130
