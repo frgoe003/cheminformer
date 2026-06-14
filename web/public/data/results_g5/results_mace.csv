@@ -1,0 +1,97 @@
+system,n_atoms,model,dtype,device,n_warmup,n_steps,elapsed_s,steps_per_s,ms_per_step,vram_mib,avg_power_w,peak_power_w,status,error
+capped_ala,22,polar-1-s,float32,cuda:0,100,100,6.9758,14.34,69.76,272.0,79.2,82.0,ok,
+chignolin,138,polar-1-s,float32,cuda:0,100,100,8.0523,12.42,80.52,968.0,144.4,152.0,ok,
+ubiquitin,602,polar-1-s,float32,cuda:0,100,100,93.7385,1.07,937.38,20314.0,160.2,174.8,ok,
+2LZM,?,polar-1-s,float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 12.40 GiB. GPU 0 has a total capacity of 22.06 GiB of which 7.13 GiB is free. Including non-PyTorch memory, this process has 14.92 GiB memory in use. Of the allocated memory 14.44 GiB is allocated by PyTorch, and 187.89 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+1ZG4,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+3N5G,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+5G1P,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+1B3B,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+9VM6,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+water_99k,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+water_199k,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+water_499k,?,polar-1-s,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+capped_ala,22,polar-1-m,float32,cuda:0,100,100,10.059,9.94,100.59,474.0,85.2,111.8,ok,
+chignolin,138,polar-1-m,float32,cuda:0,100,100,14.806,6.75,148.06,1846.0,167.1,184.1,ok,
+ubiquitin,602,polar-1-m,float32,cuda:0,100,100,143.3481,0.7,1433.48,21826.0,150.7,175.6,ok,
+2LZM,?,polar-1-m,float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 12.40 GiB. GPU 0 has a total capacity of 22.06 GiB of which 249.44 MiB is free. Including non-PyTorch memory, this process has 21.81 GiB memory in use. Of the allocated memory 21.25 GiB is allocated by PyTorch, and 272.08 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+1ZG4,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+3N5G,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+5G1P,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+1B3B,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+9VM6,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+water_99k,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+water_199k,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+water_499k,?,polar-1-m,float32,cuda:0,100,100,,,,,,,skipped,OOM on 1427-atom system
+capped_ala,22,polar-1-l,float32,cuda:0,100,100,14.3145,6.99,143.14,972.0,97.3,101.3,ok,
+chignolin,138,polar-1-l,float32,cuda:0,100,100,31.5834,3.17,315.83,4616.0,179.3,183.4,ok,
+ubiquitin,?,polar-1-l,float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 6.15 GiB. GPU 0 has a total capacity of 22.06 GiB of which 3.94 GiB is free. Including non-PyTorch memory, this process has 18.12 GiB memory in use. Of the allocated memory 17.57 GiB is allocated by PyTorch, and 257.67 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+2LZM,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+1ZG4,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+3N5G,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+5G1P,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+1B3B,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+9VM6,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+water_99k,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+water_199k,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+water_499k,?,polar-1-l,float32,cuda:0,100,100,,,,,,,skipped,OOM on 602-atom system
+capped_ala,22,MACE-OFF23(S),float32,cuda:0,100,100,2.1839,45.79,21.84,52.0,67.4,67.6,ok,
+chignolin,138,MACE-OFF23(S),float32,cuda:0,100,100,2.2742,43.97,22.74,156.0,86.9,87.9,ok,
+ubiquitin,602,MACE-OFF23(S),float32,cuda:0,100,100,5.5494,18.02,55.49,592.0,98.0,105.2,ok,
+2LZM,1427,MACE-OFF23(S),float32,cuda:0,100,100,11.6417,8.59,116.42,1196.0,103.5,118.4,ok,
+1ZG4,2224,MACE-OFF23(S),float32,cuda:0,100,100,16.1078,6.21,161.08,1858.0,109.0,118.5,ok,
+3N5G,2304,MACE-OFF23(S),float32,cuda:0,100,100,21.2301,4.71,212.3,1898.0,100.7,126.0,ok,
+5G1P,13193,MACE-OFF23(S),float32,cuda:0,100,100,97.8122,1.02,978.12,10670.0,112.0,126.7,ok,
+1B3B,19008,MACE-OFF23(S),float32,cuda:0,100,100,202.4784,0.49,2024.78,15690.0,99.8,131.1,ok,
+9VM6,?,MACE-OFF23(S),float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.07 GiB. GPU 0 has a total capacity of 22.06 GiB of which 5.56 GiB is free. Including non-PyTorch memory, this process has 16.50 GiB memory in use. Of the allocated memory 16.02 GiB is allocated by PyTorch, and 190.09 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+water_99k,?,MACE-OFF23(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 53700-atom system
+water_199k,?,MACE-OFF23(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 53700-atom system
+water_499k,?,MACE-OFF23(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 53700-atom system
+capped_ala,22,MACE-OFF23(L),float32,cuda:0,100,100,3.0706,32.57,30.71,226.0,92.0,93.3,ok,
+chignolin,138,MACE-OFF23(L),float32,cuda:0,100,100,7.3641,13.58,73.64,1854.0,183.2,189.1,ok,
+ubiquitin,602,MACE-OFF23(L),float32,cuda:0,100,100,25.5151,3.92,255.15,5820.0,182.3,189.3,ok,
+2LZM,1427,MACE-OFF23(L),float32,cuda:0,100,100,61.487,1.63,614.87,14882.0,186.9,200.8,ok,
+1ZG4,2224,MACE-OFF23(L),float32,cuda:0,100,100,113.7524,0.88,1137.52,20744.0,175.6,203.0,ok,
+3N5G,2304,MACE-OFF23(L),float32,cuda:0,100,100,120.1144,0.83,1201.14,20624.0,171.0,199.3,ok,
+5G1P,?,MACE-OFF23(L),float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 8.98 GiB. GPU 0 has a total capacity of 22.06 GiB of which 8.56 GiB is free. Including non-PyTorch memory, this process has 13.49 GiB memory in use. Of the allocated memory 13.03 GiB is allocated by PyTorch, and 170.69 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+1B3B,?,MACE-OFF23(L),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+9VM6,?,MACE-OFF23(L),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_99k,?,MACE-OFF23(L),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_199k,?,MACE-OFF23(L),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_499k,?,MACE-OFF23(L),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+capped_ala,22,MACE-OFF24(M),float32,cuda:0,100,100,2.637,37.92,26.37,100.0,72.9,73.6,ok,
+chignolin,138,MACE-OFF24(M),float32,cuda:0,100,100,3.338,29.96,33.38,694.0,124.6,134.5,ok,
+ubiquitin,602,MACE-OFF24(M),float32,cuda:0,100,100,11.8302,8.45,118.3,2136.0,152.5,168.2,ok,
+2LZM,1427,MACE-OFF24(M),float32,cuda:0,100,100,27.133,3.69,271.33,5022.0,159.5,171.0,ok,
+1ZG4,2224,MACE-OFF24(M),float32,cuda:0,100,100,41.8621,2.39,418.62,8836.0,161.1,181.7,ok,
+3N5G,2304,MACE-OFF24(M),float32,cuda:0,100,100,47.3583,2.11,473.58,8056.0,151.0,165.6,ok,
+5G1P,?,MACE-OFF24(M),float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.83 GiB. GPU 0 has a total capacity of 22.06 GiB of which 4.84 GiB is free. Including non-PyTorch memory, this process has 17.22 GiB memory in use. Of the allocated memory 16.76 GiB is allocated by PyTorch, and 163.11 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+1B3B,?,MACE-OFF24(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+9VM6,?,MACE-OFF24(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_99k,?,MACE-OFF24(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_199k,?,MACE-OFF24(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_499k,?,MACE-OFF24(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+capped_ala,22,MACE-MH-1,float32,cuda:0,100,100,3.9098,25.58,39.1,230.0,81.0,82.4,ok,
+chignolin,138,MACE-MH-1,float32,cuda:0,100,100,6.3724,15.69,63.72,1064.0,160.2,163.6,ok,
+ubiquitin,602,MACE-MH-1,float32,cuda:0,100,100,23.9405,4.18,239.41,3806.0,172.8,182.9,ok,
+2LZM,1427,MACE-MH-1,float32,cuda:0,100,100,55.9187,1.79,559.19,9016.0,177.6,188.7,ok,
+1ZG4,2224,MACE-MH-1,float32,cuda:0,100,100,87.2396,1.15,872.4,14380.0,180.0,194.5,ok,
+3N5G,2304,MACE-MH-1,float32,cuda:0,100,100,93.6403,1.07,936.4,14500.0,173.2,191.7,ok,
+5G1P,?,MACE-MH-1,float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 6.44 GiB. GPU 0 has a total capacity of 22.06 GiB of which 3.66 GiB is free. Including non-PyTorch memory, this process has 18.39 GiB memory in use. Of the allocated memory 17.90 GiB is allocated by PyTorch, and 207.49 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+1B3B,?,MACE-MH-1,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+9VM6,?,MACE-MH-1,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_99k,?,MACE-MH-1,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_199k,?,MACE-MH-1,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_499k,?,MACE-MH-1,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+capped_ala,22,MACE-OMOL-0,float32,cuda:0,100,100,6.4799,15.43,64.8,462.0,82.3,82.9,ok,
+chignolin,138,MACE-OMOL-0,float32,cuda:0,100,100,12.7544,7.84,127.54,2350.0,183.6,188.8,ok,
+ubiquitin,602,MACE-OMOL-0,float32,cuda:0,100,100,212.8475,0.47,2128.48,7134.0,63.6,78.2,ok,
+2LZM,1427,MACE-OMOL-0,float32,cuda:0,100,100,222.9747,0.45,2229.75,17712.0,78.0,108.4,ok,
+1ZG4,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,error,
+3N5G,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,error,
+5G1P,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,error,"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.82 GiB. GPU 0 has a total capacity of 22.06 GiB of which 6.20 GiB is free. Including non-PyTorch memory, this process has 15.85 GiB memory in use. Of the allocated memory 15.48 GiB is allocated by PyTorch, and 78.85 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+1B3B,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+9VM6,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_99k,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_199k,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system
+water_499k,?,MACE-OMOL-0,float32,cuda:0,100,100,,,,,,,skipped,OOM on 13193-atom system

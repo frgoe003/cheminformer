@@ -1,0 +1,25 @@
+system,n_atoms,model,dtype,device,n_warmup,n_steps,elapsed_s,steps_per_s,ms_per_step,vram_mib,avg_power_w,peak_power_w,status,error
+capped_ala,22,FeNNix-Bio1(S),float32,cuda:0,100,100,0.4652,214.95,4.65,0.0,64.8,65.6,ok,
+chignolin,138,FeNNix-Bio1(S),float32,cuda:0,100,100,0.5099,196.12,5.1,0.0,70.0,70.6,ok,
+ubiquitin,602,FeNNix-Bio1(S),float32,cuda:0,100,100,18.325,5.46,183.25,0.0,62.6,75.6,ok,
+2LZM,1427,FeNNix-Bio1(S),float32,cuda:0,100,100,42.7018,2.34,427.02,0.0,62.2,73.4,ok,
+1ZG4,2224,FeNNix-Bio1(S),float32,cuda:0,100,100,62.9393,1.59,629.39,0.0,62.5,91.7,ok,
+3N5G,2304,FeNNix-Bio1(S),float32,cuda:0,100,100,68.5063,1.46,685.06,0.0,62.5,99.4,ok,
+5G1P,13193,FeNNix-Bio1(S),float32,cuda:0,100,100,42.3137,2.36,423.14,0.0,68.8,160.1,ok,
+1B3B,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,,,error,jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: [0] Failed to load in-memory CUBIN (compiled for a different GPU?).: CUDA_ERROR_OUT_OF_MEMORY: out of memory [executable_name='jit_process']
+9VM6,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+water_99k,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+water_199k,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+water_499k,?,FeNNix-Bio1(S),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+capped_ala,22,FeNNix-Bio1(M),float32,cuda:0,100,100,0.4369,228.89,4.37,0.0,65.5,66.0,ok,
+chignolin,138,FeNNix-Bio1(M),float32,cuda:0,100,100,0.5565,179.71,5.56,0.0,73.6,74.7,ok,
+ubiquitin,602,FeNNix-Bio1(M),float32,cuda:0,100,100,18.6369,5.37,186.37,0.0,63.0,86.8,ok,
+2LZM,1427,FeNNix-Bio1(M),float32,cuda:0,100,100,20.4849,4.88,204.85,0.0,63.7,92.3,ok,
+1ZG4,2224,FeNNix-Bio1(M),float32,cuda:0,100,100,21.8205,4.58,218.21,0.0,65.0,120.3,ok,
+3N5G,2304,FeNNix-Bio1(M),float32,cuda:0,100,100,23.8489,4.19,238.49,0.0,64.2,112.6,ok,
+5G1P,13193,FeNNix-Bio1(M),float32,cuda:0,100,100,43.4032,2.3,434.03,0.0,74.5,182.9,ok,
+1B3B,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,,,error,jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: [0] Failed to load in-memory CUBIN (compiled for a different GPU?).: CUDA_ERROR_OUT_OF_MEMORY: out of memory [executable_name='jit_process']
+9VM6,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+water_99k,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+water_199k,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
+water_499k,?,FeNNix-Bio1(M),float32,cuda:0,100,100,,,,,,,skipped,OOM on 19008-atom system
