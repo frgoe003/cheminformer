@@ -74,6 +74,7 @@ export interface MaeMatrix {
   cols: string[];
   counts: Record<string, number>;
   data: Record<string, Record<string, number | null>>;
+  n_ok: Record<string, Record<string, number>>;
   min: number;
   max: number;
 }
@@ -129,6 +130,10 @@ export const FILE_TO_MODEL: Record<string, string> = {
   "Orb-v3-omol":    "Orb-v3-omol",
   "UMA-m-1.1":        "UMA-m-1.1",
   "UMA-s-1.2":        "UMA-s-1.2",
+  "AllScAIP-cons":    "AllScAIP-cons",
+  "AllScAIP-direct":  "AllScAIP-direct",
+  "g-xTB":            "g-xTB",
+  "GFN2-xTB":         "GFN2-xTB",
   "polar-1-l":      "polar-1-l",
   "polar-1-m":      "polar-1-m",
   "polar-1-s":      "polar-1-s",
@@ -149,7 +154,11 @@ export const MODEL_LABEL: Record<string, string> = {
   "MACELES-OFF":     "MACELES-OFF",
   "Orb-v3-omol":     "Orb-v3-omol",
   "UMA-m-1.1":       "UMA-m-1.1",
-  "UMA-s-1.2":       "UMA-s-1.2",
+  "UMA-s-1.2":       'UMA-s-1.2 (task="omol")',
+  "AllScAIP-cons":   'AllScAIP (cons, task="omol")',
+  "AllScAIP-direct": 'AllScAIP (direct, task="omol")',
+  "g-xTB":           "g-xTB",
+  "GFN2-xTB":        "GFN2-xTB",
   "polar-1-l":       "Polar-1(L)",
   "polar-1-m":       "Polar-1(M)",
   "polar-1-s":       "Polar-1(S)",
@@ -171,6 +180,10 @@ export const MODEL_COLOR: Record<string, string> = {
   "Orb-v3-omol":     "#14b8a6",
   "UMA-m-1.1":       "#f97316",
   "UMA-s-1.2":       "#ea580c",
+  "AllScAIP-cons":   "#0284c7",
+  "AllScAIP-direct": "#0ea5e9",
+  "g-xTB":           "#78716c",
+  "GFN2-xTB":        "#a8a29e",
   "polar-1-l":       "#22c55e",
   "polar-1-m":       "#16a34a",
   "polar-1-s":       "#84cc16",
@@ -253,7 +266,7 @@ export async function loadMaePerMol(): Promise<PerMolRow[]> {
 
 export async function loadResults(dir: string): Promise<ResultRow[]> {
   const stems = [
-    "results_aceff", "results_aimnet", "results_egret", "results_fennix",
+    "results_aceff", "results_aimnet", "results_allscaip", "results_egret", "results_fennix",
     "results_mace", "results_maceles", "results_orb", "results_uma",
   ];
   const all: ResultRow[] = [];
@@ -275,10 +288,21 @@ export function buildMaeMatrix(rows: PerMolRow[]): MaeMatrix {
   const models = [...modelSet];
 
   const data: MaeMatrix["data"] = {};
+  const n_ok: MaeMatrix["n_ok"] = {};
+
   for (const model of models) {
     const mr = rows.filter((r) => r.model === model);
+    n_ok[model] = {
+      "Overall":       mr.length,
+      "Small Ligands": mr.filter((r) => r.subset === "Small Ligands").length,
+      "Large Ligands": mr.filter((r) => r.subset === "Large Ligands").length,
+      "Pentapeptides": mr.filter((r) => r.subset === "Pentapeptides").length,
+      "Dimers":        mr.filter((r) => r.subset === "Dimers").length,
+      "Neutral":       mr.filter((r) => r.charge === 0).length,
+      "Charged":       mr.filter((r) => r.charge !== 0).length,
+    };
     const mean = (f: (r: PerMolRow) => boolean) => {
-      const vals = mr.filter(f).map((r) => r.mae_kcal);
+      const vals = mr.filter(f).map((r) => r.mae_kcal).filter((v) => Number.isFinite(v));
       return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
     };
     data[model] = {
@@ -297,10 +321,10 @@ export function buildMaeMatrix(rows: PerMolRow[]): MaeMatrix {
   );
 
   const allVals = models.flatMap((m) =>
-    Object.values(data[m]).filter((v): v is number => v !== null),
+    Object.values(data[m]).filter((v): v is number => v !== null && Number.isFinite(v)),
   );
   return {
-    models, cols: [...MAE_COLS], counts: COL_COUNT, data,
+    models, cols: [...MAE_COLS], counts: COL_COUNT, data, n_ok,
     min: Math.min(...allVals),
     max: percentile(allVals, 0.97),
   };
@@ -337,6 +361,7 @@ export interface ModelMeta {
   lot: string;
   charges: boolean | null;
   permissive: boolean | null;
+  note?: string;
 }
 
 export const MODEL_META: Record<string, ModelMeta> = {
@@ -355,6 +380,10 @@ export const MODEL_META: Record<string, ModelMeta> = {
   "Orb-v3-omol":    { elements: 89,   params_M: 26,    train_M: 100,  lot: "ωB97M-V/def2-TZVPD",     charges: true,  permissive: true  },
   "UMA-s-1.2":        { elements: 89,   params_M: 150,   train_M: 484,  lot: "ωB97M-V/def2-TZVPD",     charges: true,  permissive: true  },
   "UMA-m-1.1":        { elements: 89,   params_M: 1400,  train_M: 484,  lot: "ωB97M-V/def2-TZVPD",     charges: true,  permissive: true  },
+  "AllScAIP-cons":    { elements: 89,   params_M: 102,   train_M: 100,  lot: "ωB97M-V/def2-TZVPD",     charges: true,  permissive: true  },
+  "AllScAIP-direct":  { elements: 89,   params_M: 102,   train_M: 100,  lot: "ωB97M-V/def2-TZVPD",     charges: true,  permissive: true  },
+  "g-xTB":            { elements: 103,  params_M: null,  train_M: null, lot: "ωB97M-V/def2-TZVPPD",    charges: true,  permissive: null  },
+  "GFN2-xTB":         { elements: 86,   params_M: null,  train_M: null, lot: "GFN2-xTB",               charges: true,  permissive: true  },
   "polar-1-s":      { elements: null, params_M: null,  train_M: 100,  lot: "—",                       charges: null,  permissive: false },
   "polar-1-m":      { elements: null, params_M: null,  train_M: 100,  lot: "—",                       charges: null,  permissive: false },
   "polar-1-l":      { elements: null, params_M: null,  train_M: 100,  lot: "—",                       charges: null,  permissive: false },

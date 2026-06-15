@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { MaeMatrix, ResultRow, GpuId } from "../data";
 import { MODEL_LABEL, MODEL_META, GPU_INSTANCES, GPU_ORDER } from "../data";
 
@@ -46,7 +46,20 @@ export function ModelTable({
   const [gpu, setGpu]   = useState<GpuId>(defaultGpu);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "mae", dir: 1 });
 
+  // Collect unique footnotes in stable order across all displayed models
+  const footnotes = useMemo(() => {
+    const seen = new Map<string, number>();
+    for (const model of maeMatrix.models) {
+      const note = MODEL_META[model]?.note;
+      if (note && !seen.has(note)) seen.set(note, seen.size + 1);
+    }
+    return seen; // note text → footnote number
+  }, [maeMatrix.models]);
+
   const perfRows = perfByGpu[gpu] ?? [];
+
+  const { n_ok } = maeMatrix;
+  const n_total = maeMatrix.counts["Overall"];
 
   const rows: Row[] = maeMatrix.models.map((model) => {
     const mae  = maeMatrix.data[model]?.["Overall"] ?? null;
@@ -125,8 +138,27 @@ export function ModelTable({
           <tbody>
             {sorted.map((row) => (
               <tr key={row.model} className="mt-row">
-                <td className="mt-td mt-td--model">{MODEL_LABEL[row.model] ?? row.model}</td>
-                <td className="mt-td mt-td--num">{row.mae !== null ? row.mae.toFixed(3) : "—"}</td>
+                <td className="mt-td mt-td--model">
+                  {MODEL_LABEL[row.model] ?? row.model}
+                  {MODEL_META[row.model]?.note && (
+                    <sup className="mt-footnote-marker" title={MODEL_META[row.model]!.note}>
+                      {footnotes.get(MODEL_META[row.model]!.note!)}
+                    </sup>
+                  )}
+                </td>
+                <td
+                  className="mt-td mt-td--num"
+                  title={
+                    row.mae !== null && (n_ok[row.model]?.["Overall"] ?? n_total) < n_total
+                      ? `${n_ok[row.model]["Overall"]}/${n_total} molecules succeeded (${n_total - n_ok[row.model]["Overall"]} failed)`
+                      : undefined
+                  }
+                >
+                  {row.mae !== null ? row.mae.toFixed(3) : "—"}
+                  {row.mae !== null && (n_ok[row.model]?.["Overall"] ?? n_total) < n_total && (
+                    <sup className="hm-asterisk">*</sup>
+                  )}
+                </td>
                 <td className="mt-td mt-td--num">
                   {row.nsday !== null ? (
                     row.nsday >= 10 ? row.nsday.toFixed(1) :
@@ -166,6 +198,16 @@ export function ModelTable({
           </tbody>
         </table>
       </div>
+
+      {footnotes.size > 0 && (
+        <div className="mt-footnotes">
+          {[...footnotes.entries()].map(([note, n]) => (
+            <div key={n} className="mt-footnote">
+              <sup>{n}</sup> {note}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

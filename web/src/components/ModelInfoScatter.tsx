@@ -82,6 +82,20 @@ export function ModelInfoScatter({ maeMatrix, xKey, xLabel }: Props) {
   const xMin = Math.min(...xs) * 0.55;
   const xMax = Math.max(...xs) * 1.8;
 
+  const xTicks = (() => {
+    const lo = Math.floor(Math.log10(xMin));
+    const hi = Math.ceil(Math.log10(xMax));
+    const seen = new Set<number>();
+    const out: number[] = [];
+    for (let e = lo; e <= hi; e++) {
+      for (const m of [1, 2, 5]) {
+        const v = m * Math.pow(10, e);
+        if (v >= xMin && v <= xMax && !seen.has(v)) { seen.add(v); out.push(v); }
+      }
+    }
+    return out.sort((a, b) => a - b);
+  })();
+
   const makeTooltip = (props: any) => <InfoTooltip {...props} xLabel={xLabel} />;
 
   return (
@@ -93,6 +107,7 @@ export function ModelInfoScatter({ maeMatrix, xKey, xLabel }: Props) {
           scale="log"
           type="number"
           domain={[xMin, xMax]}
+          ticks={xTicks}
           tickFormatter={fmtX}
           tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
           stroke="#e5e7eb"

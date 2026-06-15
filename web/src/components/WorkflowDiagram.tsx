@@ -96,6 +96,30 @@ export function WorkflowDiagram() {
 
       <details className="wf-env-details">
         <summary className="wf-env-summary">
+          <span>Charge &amp; spin handling</span>
+        </summary>
+        <div className="wf-env-table">
+          <div className="wf-charge-row">
+            <span className="wf-charge-ctx">SPICE MAE</span>
+            <span className="wf-charge-desc">
+              Charge derived per-molecule from SMILES via OpenFF{" "}
+              <code className="wf-charge-code">mol.total_charge</code>.
+              Spin set to 1 (singlet) if electron count is even, 2 (doublet) if odd —
+              capturing ions and charged fragments such as ammonium, carboxylate, and phosphate groups.
+            </span>
+          </div>
+          <div className="wf-charge-row">
+            <span className="wf-charge-ctx">MD systems</span>
+            <span className="wf-charge-desc">
+              All systems treated as neutral (charge = 0, spin = 1) —
+              fully protonated structures at neutral pH.
+            </span>
+          </div>
+        </div>
+      </details>
+
+      <details className="wf-env-details">
+        <summary className="wf-env-summary">
           <span>Software environment</span>
           <span className="wf-env-base">Python 3.11 · PyTorch cu128 (CUDA 12.8) · ASE</span>
         </summary>

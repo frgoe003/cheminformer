@@ -1,0 +1,2 @@
+model,dtype,device,n_molecules,n_errors,mae_kj_mol,mae_kcal_mol,mae_ev,status,error
+GFN2-xTB,float32,cpu,798,2,15.4375,3.6896,0.159998,ok,
