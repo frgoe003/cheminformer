@@ -113,11 +113,11 @@ export function ModelTable({
           <thead>
             <tr>
               <Th label="Model"    sortKey="model" />
-              <Th label="MAE"      sortKey="mae"   title="Overall SPICE MAE (kcal/mol)" />
-              <Th label="ns/day"   sortKey="nsday" title="ns per day at chignolin (1 fs timestep)" />
-              <Th label="VRAM"     sortKey="vram"  title="VRAM at chignolin (MiB)" />
-              <Th label="Params"   sortKey="params" title="Parameter count (millions)" />
-              <Th label="Training" sortKey="train"  title="Training set size (millions)" />
+              <Th label="MAE (kcal/mol)"  sortKey="mae"   title="Overall SPICE MAE (kcal/mol)" />
+              <Th label="ns/day"          sortKey="nsday" title="ns per day at chignolin (1 fs timestep)" />
+              <Th label="VRAM (MiB)"      sortKey="vram"  title="VRAM at chignolin" />
+              <Th label="Params (M)"      sortKey="params" title="Parameter count (millions)" />
+              <Th label="Training (M)"    sortKey="train"  title="Training set size (millions)" />
               <th className="mt-th">Charges</th>
               <th className="mt-th">License</th>
             </tr>
