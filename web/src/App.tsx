@@ -22,6 +22,7 @@ export default function App() {
   const [maeRows, setMaeRows]     = useState<PerMolRow[] | null>(null);
   const [perfByGpu, setPerfByGpu] = useState<Partial<Record<GpuId, ResultRow[]>>>({});
   const [error, setError]         = useState<string | null>(null);
+  const [showStd, setShowStd]     = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -91,15 +92,24 @@ export default function App() {
           <section>
             <div className="page-section-label">SPICE Benchmark (Accuracy)</div>
             <div className="card">
-              <div className="section-subtitle">
-                Mean absolute error (kcal mol⁻¹) across molecule subsets of the{" "}
-                <a className="subtle-link" href="https://zenodo.org/records/19633352" target="_blank" rel="noopener noreferrer">
-                  SPICE test set (v3) ↗
-                </a>.
+              <div className="section-header-row">
+                <div className="section-subtitle">
+                  Mean absolute error (kcal mol⁻¹) across molecule subsets of the{" "}
+                  <a className="subtle-link" href="https://zenodo.org/records/19633352" target="_blank" rel="noopener noreferrer">
+                    SPICE test set (v3) ↗
+                  </a>.
+                </div>
+                <button
+                  className={`hm-std-toggle${showStd ? " hm-std-toggle--active" : ""}`}
+                  onClick={() => setShowStd((s) => !s)}
+                  title="Show standard deviation across molecules"
+                >
+                  ± std
+                </button>
               </div>
               {!maeMatrix
                 ? <div className="chart-loading"><Spinner /> Loading…</div>
-                : <MaeHeatmap matrix={maeMatrix} />
+                : <MaeHeatmap matrix={maeMatrix} showStd={showStd} />
               }
             </div>
           </section>

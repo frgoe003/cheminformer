@@ -74,6 +74,7 @@ export interface MaeMatrix {
   cols: string[];
   counts: Record<string, number>;
   data: Record<string, Record<string, number | null>>;
+  std_data: Record<string, Record<string, number | null>>;
   n_ok: Record<string, Record<string, number>>;
   min: number;
   max: number;
@@ -288,6 +289,7 @@ export function buildMaeMatrix(rows: PerMolRow[]): MaeMatrix {
   const models = [...modelSet];
 
   const data: MaeMatrix["data"] = {};
+  const std_data: MaeMatrix["std_data"] = {};
   const n_ok: MaeMatrix["n_ok"] = {};
 
   for (const model of models) {
@@ -301,19 +303,29 @@ export function buildMaeMatrix(rows: PerMolRow[]): MaeMatrix {
       "Neutral":       mr.filter((r) => r.charge === 0).length,
       "Charged":       mr.filter((r) => r.charge !== 0).length,
     };
-    const mean = (f: (r: PerMolRow) => boolean) => {
+    const meanAndStd = (f: (r: PerMolRow) => boolean): [number | null, number | null] => {
       const vals = mr.filter(f).map((r) => r.mae_kcal).filter((v) => Number.isFinite(v));
-      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+      if (!vals.length) return [null, null];
+      const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const std = Math.sqrt(vals.reduce((a, v) => a + (v - m) ** 2, 0) / vals.length);
+      return [m, std];
     };
-    data[model] = {
-      "Overall":       mean(() => true),
-      "Small Ligands": mean((r) => r.subset === "Small Ligands"),
-      "Large Ligands": mean((r) => r.subset === "Large Ligands"),
-      "Pentapeptides": mean((r) => r.subset === "Pentapeptides"),
-      "Dimers":        mean((r) => r.subset === "Dimers"),
-      "Neutral":       mean((r) => r.charge === 0),
-      "Charged":       mean((r) => r.charge !== 0),
-    };
+    const filters: [string, (r: PerMolRow) => boolean][] = [
+      ["Overall",       () => true],
+      ["Small Ligands", (r) => r.subset === "Small Ligands"],
+      ["Large Ligands", (r) => r.subset === "Large Ligands"],
+      ["Pentapeptides", (r) => r.subset === "Pentapeptides"],
+      ["Dimers",        (r) => r.subset === "Dimers"],
+      ["Neutral",       (r) => r.charge === 0],
+      ["Charged",       (r) => r.charge !== 0],
+    ];
+    data[model]     = {};
+    std_data[model] = {};
+    for (const [col, f] of filters) {
+      const [m, s] = meanAndStd(f);
+      data[model][col]     = m;
+      std_data[model][col] = s;
+    }
   }
 
   models.sort(
@@ -324,7 +336,7 @@ export function buildMaeMatrix(rows: PerMolRow[]): MaeMatrix {
     Object.values(data[m]).filter((v): v is number => v !== null && Number.isFinite(v)),
   );
   return {
-    models, cols: [...MAE_COLS], counts: COL_COUNT, data, n_ok,
+    models, cols: [...MAE_COLS], counts: COL_COUNT, data, std_data, n_ok,
     min: Math.min(...allVals),
     max: percentile(allVals, 0.97),
   };

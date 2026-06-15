@@ -96,6 +96,56 @@ export function WorkflowDiagram() {
 
       <details className="wf-env-details">
         <summary className="wf-env-summary">
+          <span>Accuracy metric</span>
+        </summary>
+        <div className="wf-env-table">
+          <div className="wf-formula-block">
+            <p className="wf-formula-line">
+              For each molecule <em>m</em> with <em>N</em> conformations, form all{" "}
+              <em>C</em>(<em>N</em>, 2) pairwise energy differences:
+            </p>
+            <div className="wf-formula-math">
+              <div className="wf-formula-eq">
+                <span>MAE</span>
+                <sub>mol</sub>
+                <span className="wf-formula-sym"> = </span>
+                <span className="wf-formula-frac">
+                  <span className="wf-formula-num">1</span>
+                  <span className="wf-formula-den"><em>C</em>(<em>N</em>, 2)</span>
+                </span>
+                <span className="wf-formula-sym"> ∑</span>
+                <sub>i &lt; j</sub>
+                <span className="wf-formula-sym"> | </span>
+                <span>(E</span><sub>i</sub><sup>MLIP</sup>
+                <span> − E</span><sub>j</sub><sup>MLIP</sup><span>)</span>
+                <span className="wf-formula-sym"> − </span>
+                <span>(E</span><sub>i</sub><sup>DFT</sup>
+                <span> − E</span><sub>j</sub><sup>DFT</sup><span>)</span>
+                <span className="wf-formula-sym"> |</span>
+              </div>
+              <div className="wf-formula-eq">
+                <span>MAE</span>
+                <span className="wf-formula-sym"> = </span>
+                <span className="wf-formula-frac">
+                  <span className="wf-formula-num">1</span>
+                  <span className="wf-formula-den"><em>M</em></span>
+                </span>
+                <span className="wf-formula-sym"> ∑</span>
+                <sub>mol</sub>
+                <span className="wf-formula-sym"> MAE</span>
+                <sub>mol</sub>
+              </div>
+            </div>
+            <p className="wf-formula-line">
+              <em>M</em> = number of molecules. Energies are DFT formation energies
+              (atomic references subtracted) in kcal mol⁻¹.
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <details className="wf-env-details">
+        <summary className="wf-env-summary">
           <span>Charge &amp; spin handling</span>
         </summary>
         <div className="wf-env-table">
