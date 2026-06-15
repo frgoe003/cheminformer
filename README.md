@@ -15,7 +15,7 @@ Speed and accuracy benchmark of foundational machine learning interatomic potent
 | MACE | MACE-OFF23(S/L), MACE-OFF24(M), MACE-MH-1, MACE-OMOL-0, Polar-1(S/M/L) |
 | AceFF | AceFF-1.1, AceFF-2.0 |
 | FeNNix | FeNNix-Bio1(S/M) |
-| UMA | UMA-s-1, UMA-m-1 |
+| UMA | UMA-s-1.2, UMA-m-1.1 |
 | Orb | Orb-v3-omol |
 | AIMNet2 | AIMNet2 |
 | Egret | Egret-1 |

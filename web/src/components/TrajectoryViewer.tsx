@@ -127,7 +127,7 @@ export function TrajectoryViewer({ height = 300, showControls = true, url }: Pro
             {playing ? "⏸ Pause" : "▶ Play"}
           </button>
           <span style={{ fontSize: 11, color: "#9ca3af" }}>
-            chignolin · 138 atoms · 22 frames · UMA-s-1
+            chignolin · 138 atoms · 22 frames · UMA-s-1.2
           </span>
         </div>
       )}

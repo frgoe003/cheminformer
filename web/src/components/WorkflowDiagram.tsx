@@ -21,7 +21,7 @@ const ENVS = [
   },
   {
     name: "ase-uma",
-    models: ["UMA-s-1", "UMA-m-1"],
+    models: ["UMA-s-1.2", "UMA-m-1.1"],
     packages: ["fairchem-core"],
   },
   {
