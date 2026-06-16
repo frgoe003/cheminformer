@@ -40,7 +40,7 @@ function ModelDot(props: any) {
       <circle
         cx={cx} cy={cy} r={r}
         fill={color}
-        stroke={payload.pareto ? "white" : "none"}
+        stroke={payload.pareto ? "var(--surface)" : "none"}
         strokeWidth={payload.pareto ? 1.5 : 0}
         opacity={payload.pareto ? 1 : 0.6}
       />
@@ -61,25 +61,25 @@ function ScatterTooltip({ active, payload }: { active?: boolean; payload?: any[]
     <div className="chart-tooltip">
       <div className="chart-tooltip__row" style={{ marginBottom: 4 }}>
         <span className="chart-tooltip__dot" style={{ background: color }} />
-        <span style={{ fontWeight: 600, color: "#111827", fontSize: 12 }}>
+        <span style={{ fontWeight: 600, color: "var(--text-strong)", fontSize: 12 }}>
           {MODEL_LABEL[d.model] ?? d.model}
         </span>
       </div>
-      <div style={{ paddingLeft: 14, lineHeight: 1.8, fontSize: 10.5, color: "#374151" }}>
+      <div style={{ paddingLeft: 14, lineHeight: 1.8, fontSize: 10.5, color: "var(--text)" }}>
         <div>
           SPICE MAE{" "}
           <span style={{ fontWeight: 600 }}>{d.y.toFixed(3)}</span>{" "}
-          <span style={{ color: "#9ca3af" }}>kcal/mol</span>
+          <span style={{ color: "var(--text-faint)" }}>kcal/mol</span>
         </div>
         <div>
           Speed{" "}
           <span style={{ fontWeight: 600 }}>
             {d.x >= 1000 ? `${(d.x / 1000).toFixed(1)}k` : d.x.toFixed(1)}
           </span>{" "}
-          <span style={{ color: "#9ca3af" }}>ms/step</span>
+          <span style={{ color: "var(--text-faint)" }}>ms/step</span>
         </div>
         {d.pareto && (
-          <div style={{ color: "#4f46e5", marginTop: 2 }}>★ Pareto frontier</div>
+          <div style={{ color: "var(--brand)", marginTop: 2 }}>★ Pareto frontier</div>
         )}
       </div>
     </div>
@@ -133,8 +133,8 @@ export function ParetoScatter({ system, nAtoms, maeMatrix, perfRows, showTraject
             position: "absolute", top: 0, right: 0, zIndex: 5,
             width: 150, height: 150,
             borderRadius: 8, overflow: "hidden",
-            border: "1px solid #e5e7eb",
-            boxShadow: "0 1px 6px rgba(0,0,0,0.07)",
+            border: "1px solid var(--border)",
+            boxShadow: "var(--shadow-sm)",
           }}>
             <TrajectoryViewer height={150} showControls={false} />
           </div>
@@ -142,17 +142,17 @@ export function ParetoScatter({ system, nAtoms, maeMatrix, perfRows, showTraject
 
         <ResponsiveContainer width="100%" height={270}>
           <ComposedChart margin={{ top: 8, right: showTrajectory ? 162 : 16, bottom: 32, left: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
             <XAxis
               dataKey="x"
               scale="log"
               type="number"
               domain={[xMin, xMax]}
               tickFormatter={fmtX}
-              tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
-              stroke="#e5e7eb"
+              tick={{ fill: "var(--text-faint)", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+              stroke="var(--chart-axis)"
               height={40}
-              label={{ value: "ms / step  (log scale)", position: "insideBottom", offset: -6, fill: "#9ca3af", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace" }}
+              label={{ value: "ms / step  (log scale)", position: "insideBottom", offset: -6, fill: "var(--text-faint)", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace" }}
               name="ms/step"
             />
             <YAxis
@@ -160,13 +160,13 @@ export function ParetoScatter({ system, nAtoms, maeMatrix, perfRows, showTraject
               type="number"
               domain={["auto", "auto"]}
               tickFormatter={(v: number) => v.toFixed(2)}
-              tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
-              stroke="#e5e7eb"
+              tick={{ fill: "var(--text-faint)", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+              stroke="var(--chart-axis)"
               width={52}
-              label={{ value: "↓ SPICE MAE (kcal/mol)", angle: -90, position: "insideLeft", fill: "#9ca3af", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace", offset: 8 }}
+              label={{ value: "↓ SPICE MAE (kcal/mol)", angle: -90, position: "insideLeft", fill: "var(--text-faint)", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace", offset: 8 }}
               name="SPICE MAE (kcal/mol)"
             />
-            <Tooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: "3 3", stroke: "#e5e7eb" }} />
+            <Tooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: "3 3", stroke: "var(--chart-axis)" }} />
 
             {/* Pareto frontier line — drawn first so dots sit on top */}
             <Line
@@ -175,7 +175,7 @@ export function ParetoScatter({ system, nAtoms, maeMatrix, perfRows, showTraject
               type="linear"
               dot={false}
               activeDot={false}
-              stroke="#4f46e5"
+              stroke="var(--brand)"
               strokeWidth={1.5}
               strokeDasharray="5 3"
               opacity={0.65}
@@ -196,15 +196,15 @@ export function ParetoScatter({ system, nAtoms, maeMatrix, perfRows, showTraject
       {/* Pareto frontier badge row */}
       {paretoLine.length > 0 && (
         <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: "4px 6px", alignItems: "center" }}>
-          <span style={{ fontSize: 10, color: "#9ca3af", marginRight: 2 }}>Frontier:</span>
+          <span style={{ fontSize: 10, color: "var(--text-faint)", marginRight: 2 }}>Frontier:</span>
           {[...paretoLine].sort((a, b) => b.x - a.x).map((p) => (
             <span
               key={p.model}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 4,
                 padding: "2px 8px", borderRadius: 999,
-                background: "#f3f4f6", border: "1px solid #e5e7eb",
-                fontSize: 10, fontFamily: "JetBrains Mono, monospace", color: "#374151",
+                background: "var(--surface-soft)", border: "1px solid var(--border)",
+                fontSize: 10, fontFamily: "JetBrains Mono, monospace", color: "var(--text)",
               }}
             >
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: MODEL_COLOR[p.model], flexShrink: 0 }} />
@@ -214,7 +214,7 @@ export function ParetoScatter({ system, nAtoms, maeMatrix, perfRows, showTraject
         </div>
       )}
 
-      <div style={{ marginTop: 6, fontSize: 10, color: "#9ca3af" }}>
+      <div style={{ marginTop: 6, fontSize: 10, color: "var(--text-faint)" }}>
         {allPts.length} models · {nAtoms.toLocaleString()} atoms
       </div>
     </div>

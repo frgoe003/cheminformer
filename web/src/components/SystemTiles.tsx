@@ -32,8 +32,8 @@ function AtomDot({ n }: { n: number }) {
   const r = Math.round(6 + t * 22);
   return (
     <svg width="48" height="48" viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r={r} fill="#e0e7ff" />
-      <circle cx="24" cy="24" r={Math.max(3, r - 5)} fill="#a5b4fc" />
+      <circle cx="24" cy="24" r={r} fill="var(--brand-softer)" />
+      <circle cx="24" cy="24" r={Math.max(3, r - 5)} fill="var(--brand-border)" />
     </svg>
   );
 }

@@ -39,7 +39,7 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
         <div key={p.dataKey} className="chart-tooltip__row">
           <span className="chart-tooltip__dot" style={{ background: p.color }} />
           <span style={{ flex: 1 }}>{MODEL_LABEL[p.dataKey] ?? p.dataKey}</span>
-          <span style={{ fontWeight: 600, color: "#111827" }}>{fmtNsDay(p.value)} ns/day</span>
+          <span style={{ fontWeight: 600, color: "var(--text-strong)" }}>{fmtNsDay(p.value)} ns/day</span>
         </div>
       ))}
     </div>
@@ -84,7 +84,7 @@ export function NsdayChart({ rowsByGpu }: { rowsByGpu: Partial<Record<GpuId, Res
 
       <ResponsiveContainer width="100%" height={320}>
         <ComposedChart data={pts} margin={{ top: 8, right: 24, bottom: 40, left: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
           <XAxis
             dataKey="n_atoms"
             scale="log"
@@ -92,13 +92,13 @@ export function NsdayChart({ rowsByGpu }: { rowsByGpu: Partial<Record<GpuId, Res
             domain={[15, 150_000]}
             tickFormatter={fmtAtoms}
             ticks={PERF_SYSTEMS.map((s) => s.n_atoms)}
-            tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
-            stroke="#e5e7eb"
+            tick={{ fill: "var(--text-faint)", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+            stroke="var(--chart-axis)"
             height={44}
             label={{
               value: "System size (atoms, log scale)",
               position: "insideBottom", offset: -10,
-              fill: "#9ca3af", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace",
+              fill: "var(--text-faint)", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace",
             }}
           />
           <YAxis
@@ -106,13 +106,13 @@ export function NsdayChart({ rowsByGpu }: { rowsByGpu: Partial<Record<GpuId, Res
             type="number"
             domain={["auto", "auto"]}
             tickFormatter={fmtNsDay}
-            tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
-            stroke="#e5e7eb"
+            tick={{ fill: "var(--text-faint)", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+            stroke="var(--chart-axis)"
             width={48}
             label={{
               value: "↑ ns / day (log scale)",
               angle: -90, position: "insideLeft",
-              fill: "#9ca3af", fontSize: 9.5,
+              fill: "var(--text-faint)", fontSize: 9.5,
               fontFamily: "JetBrains Mono, monospace", offset: 12,
             }}
             allowDataOverflow

@@ -5,7 +5,7 @@ import { COL_LABEL, MODEL_LABEL } from "../data";
 function cellBg(val: number, min: number, max: number) {
   const t = Math.max(0, Math.min(1, (val - min) / Math.max(max - min, 0.001)));
   const hue = Math.round(120 * (1 - t));
-  return `hsl(${hue}, 55%, 88%)`;
+  return `hsl(${hue}, var(--heatmap-cell-saturation), var(--heatmap-cell-lightness))`;
 }
 
 interface TooltipData {

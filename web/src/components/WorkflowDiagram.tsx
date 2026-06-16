@@ -50,21 +50,21 @@ export function WorkflowDiagram() {
           icon={<DataIcon />}
           title="SPICE Test Set"
           sub="800 structures · 4 subsets"
-          color="#4f46e5"
+          color="var(--brand)"
         />
         <Arrow />
         <WorkflowBox
           icon={<ModelIcon />}
           title="MLIP Inference"
           sub="15+ models"
-          color="#0891b2"
+          color="var(--cyan)"
         />
         <Arrow />
         <WorkflowBox
           icon={<MetricIcon />}
           title="SPICE MAE"
           sub="kcal/mol per subset"
-          color="#059669"
+          color="var(--green)"
           isOutput
         />
       </div>
@@ -75,21 +75,21 @@ export function WorkflowDiagram() {
           icon={<ProteinIcon />}
           title="MD Systems"
           sub="22 – 100k atoms"
-          color="#4f46e5"
+          color="var(--brand)"
         />
         <Arrow />
         <WorkflowBox
           icon={<SimIcon />}
           title="NVT MD"
           sub="OpenFF charges · 300 K · dt = 1 fs"
-          color="#0891b2"
+          color="var(--cyan)"
         />
         <Arrow />
         <WorkflowBox
           icon={<SpeedIcon />}
           title="ms / step"
           sub="VRAM · avg power"
-          color="#059669"
+          color="var(--green)"
           isOutput
         />
       </div>
@@ -211,8 +211,8 @@ function Arrow() {
   return (
     <div className="wf-arrow">
       <svg width="24" height="16" viewBox="0 0 24 16">
-        <line x1="0" y1="8" x2="18" y2="8" stroke="#d1d5db" strokeWidth="1.5" />
-        <polyline points="13,3 19,8 13,13" fill="none" stroke="#d1d5db" strokeWidth="1.5" strokeLinejoin="round" />
+        <line x1="0" y1="8" x2="18" y2="8" stroke="var(--border)" strokeWidth="1.5" />
+        <polyline points="13,3 19,8 13,13" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeLinejoin="round" />
       </svg>
     </div>
   );

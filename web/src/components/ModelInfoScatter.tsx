@@ -13,12 +13,12 @@ function LabeledDot(props: any) {
   const color = MODEL_COLOR[payload.model] ?? "#888";
   return (
     <g>
-      <circle cx={cx} cy={cy} r={4.5} fill={color} opacity={0.85} stroke="white" strokeWidth={1} />
+      <circle cx={cx} cy={cy} r={4.5} fill={color} opacity={0.85} stroke="var(--surface)" strokeWidth={1} />
       <text
         x={cx + 7} y={cy + 3.5}
         fontSize={8.5}
         fontFamily="JetBrains Mono, monospace"
-        fill="#6b7280"
+        fill="var(--text-muted)"
       >
         {MODEL_LABEL[payload.model] ?? payload.model}
       </text>
@@ -36,20 +36,20 @@ function InfoTooltip({ active, payload, xLabel }: { active?: boolean; payload?: 
     <div className="chart-tooltip">
       <div className="chart-tooltip__row" style={{ marginBottom: 4 }}>
         <span className="chart-tooltip__dot" style={{ background: color }} />
-        <span style={{ fontWeight: 600, color: "#111827", fontSize: 12 }}>
+        <span style={{ fontWeight: 600, color: "var(--text-strong)", fontSize: 12 }}>
           {MODEL_LABEL[d.model] ?? d.model}
         </span>
       </div>
-      <div style={{ paddingLeft: 14, lineHeight: 1.8, fontSize: 10.5, color: "#374151" }}>
+      <div style={{ paddingLeft: 14, lineHeight: 1.8, fontSize: 10.5, color: "var(--text)" }}>
         <div>
           SPICE MAE{" "}
           <span style={{ fontWeight: 600 }}>{d.y.toFixed(3)}</span>{" "}
-          <span style={{ color: "#9ca3af" }}>kcal/mol</span>
+          <span style={{ color: "var(--text-faint)" }}>kcal/mol</span>
         </div>
         <div>
           {xLabel}{" "}
           <span style={{ fontWeight: 600 }}>{d.x >= 1000 ? `${(d.x / 1000).toFixed(1)}k` : d.x}</span>
-          <span style={{ color: "#9ca3af" }}> M</span>
+          <span style={{ color: "var(--text-faint)" }}> M</span>
         </div>
       </div>
     </div>
@@ -101,7 +101,7 @@ export function ModelInfoScatter({ maeMatrix, xKey, xLabel }: Props) {
   return (
     <ResponsiveContainer width="100%" height={290}>
       <ComposedChart margin={{ top: 12, right: 100, bottom: 36, left: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
         <XAxis
           dataKey="x"
           scale="log"
@@ -109,13 +109,13 @@ export function ModelInfoScatter({ maeMatrix, xKey, xLabel }: Props) {
           domain={[xMin, xMax]}
           ticks={xTicks}
           tickFormatter={fmtX}
-          tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
-          stroke="#e5e7eb"
+          tick={{ fill: "var(--text-faint)", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+          stroke="var(--chart-axis)"
           height={40}
           label={{
             value: `${xLabel} (M, log scale)`,
             position: "insideBottom", offset: -8,
-            fill: "#9ca3af", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace",
+            fill: "var(--text-faint)", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace",
           }}
           name={xLabel}
         />
@@ -124,17 +124,17 @@ export function ModelInfoScatter({ maeMatrix, xKey, xLabel }: Props) {
           type="number"
           domain={["auto", "auto"]}
           tickFormatter={(v: number) => v.toFixed(2)}
-          tick={{ fill: "#9ca3af", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
-          stroke="#e5e7eb"
+          tick={{ fill: "var(--text-faint)", fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+          stroke="var(--chart-axis)"
           width={52}
           label={{
             value: "↓ SPICE MAE (kcal/mol)", angle: -90,
-            position: "insideLeft", fill: "#9ca3af", fontSize: 9.5,
+            position: "insideLeft", fill: "var(--text-faint)", fontSize: 9.5,
             fontFamily: "JetBrains Mono, monospace", offset: 8,
           }}
           name="SPICE MAE (kcal/mol)"
         />
-        <Tooltip content={makeTooltip} cursor={{ strokeDasharray: "3 3", stroke: "#e5e7eb" }} />
+        <Tooltip content={makeTooltip} cursor={{ strokeDasharray: "3 3", stroke: "var(--chart-axis)" }} />
         <Scatter data={pts} shape={<LabeledDot />} isAnimationActive={false} />
       </ComposedChart>
     </ResponsiveContainer>
