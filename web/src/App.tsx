@@ -12,6 +12,20 @@ import { WorkflowDiagram } from "./components/WorkflowDiagram";
 
 function Spinner() { return <div className="spinner" />; }
 
+type Theme = "light" | "dark";
+type ThemePreference = Theme | "system";
+
+function getSystemTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function getInitialThemePreference(): ThemePreference {
+  if (typeof window === "undefined") return "system";
+  const stored = window.localStorage.getItem("theme");
+  return stored === "light" || stored === "dark" ? stored : "system";
+}
+
 const PARETO_SYSTEMS = [
   { system: "chignolin", nAtoms: 138   },
   { system: "1ZG4",      nAtoms: 2224  },
@@ -23,6 +37,28 @@ export default function App() {
   const [perfByGpu, setPerfByGpu] = useState<Partial<Record<GpuId, ResultRow[]>>>({});
   const [error, setError]         = useState<string | null>(null);
   const [showStd, setShowStd]     = useState(false);
+  const [themePreference, setThemePreference] = useState<ThemePreference>(getInitialThemePreference);
+  const [systemTheme, setSystemTheme] = useState<Theme>(getSystemTheme);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setSystemTheme(media.matches ? "dark" : "light");
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  const activeTheme = themePreference === "system" ? systemTheme : themePreference;
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = activeTheme;
+    document.documentElement.style.colorScheme = activeTheme;
+    if (themePreference === "system") {
+      window.localStorage.removeItem("theme");
+    } else {
+      window.localStorage.setItem("theme", themePreference);
+    }
+  }, [activeTheme, themePreference]);
 
   useEffect(() => {
     Promise.all([
@@ -41,6 +77,7 @@ export default function App() {
   const maeMatrix: MaeMatrix | null = maeRows ? buildMaeMatrix(maeRows) : null;
   const g7eRows = perfByGpu.g7e ?? [];
   const ready = maeMatrix && g7eRows.length > 0;
+  const nextTheme = activeTheme === "dark" ? "light" : "dark";
 
   return (
     <div className="app">
@@ -51,6 +88,19 @@ export default function App() {
           cheminformer / <strong>MLIP benchmark</strong>
         </span>
         <div className="nav-right">
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-pressed={activeTheme === "dark"}
+            aria-label={`Switch to ${nextTheme} mode`}
+            title={`Switch to ${nextTheme} mode`}
+            onClick={() => setThemePreference(nextTheme)}
+          >
+            <span className="theme-toggle__icon" aria-hidden="true">
+              {activeTheme === "dark" ? "☀" : "☾"}
+            </span>
+            <span>{nextTheme === "dark" ? "Dark" : "Light"}</span>
+          </button>
           <a
             className="nav-link"
             href="https://github.com/frgoe003/cheminformer"

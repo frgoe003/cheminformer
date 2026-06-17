@@ -17,10 +17,10 @@ function XTick({ x, y, payload }: { x?: number; y?: number; payload?: { value: n
   const label = N_ATOMS_TO_LABEL[v] ?? v.toLocaleString();
   return (
     <g transform={`translate(${x},${y})`}>
-      <text dy={13} textAnchor="middle" fill="#9ca3af" fontSize={9.5} fontFamily="JetBrains Mono, monospace">
+      <text dy={13} textAnchor="middle" fill="var(--text-faint)" fontSize={9.5} fontFamily="JetBrains Mono, monospace">
         {label}
       </text>
-      <text dy={24} textAnchor="middle" fill="#d1d5db" fontSize={8.5} fontFamily="JetBrains Mono, monospace">
+      <text dy={24} textAnchor="middle" fill="var(--border)" fontSize={8.5} fontFamily="JetBrains Mono, monospace">
         {v >= 1000 ? (v >= 1_000_000 ? `${v / 1_000_000}M` : `${(v / 1000).toFixed(0)}k`) : String(v)}
       </text>
     </g>
@@ -98,7 +98,7 @@ function GpuScatterChart({ data, metric }: ScatterProps) {
     <div className="perf-chart-wrap">
       <ResponsiveContainer width="100%" height={320}>
         <ScatterChart margin={{ top: 8, right: 24, left: 16, bottom: 36 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
           <XAxis
             dataKey="x"
             scale="log"
@@ -108,7 +108,7 @@ function GpuScatterChart({ data, metric }: ScatterProps) {
             tick={<XTick />}
             tickLine={false}
             height={40}
-            stroke="#e5e7eb"
+            stroke="var(--chart-axis)"
             name="n_atoms"
           />
           <YAxis
@@ -117,14 +117,14 @@ function GpuScatterChart({ data, metric }: ScatterProps) {
             type="number"
             domain={["auto", "auto"]}
             tickFormatter={(v) => fmt(v as number)}
-            tick={{ fill: "#9ca3af", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace" }}
+            tick={{ fill: "var(--text-faint)", fontSize: 9.5, fontFamily: "JetBrains Mono, monospace" }}
             width={64}
-            stroke="#e5e7eb"
+            stroke="var(--chart-axis)"
             name={yLabel}
           />
           <Tooltip
             content={<ChartTooltip yLabel={yLabel} yFmt={fmt} />}
-            cursor={{ strokeDasharray: "3 3", stroke: "#e5e7eb" }}
+            cursor={{ strokeDasharray: "3 3", stroke: "var(--chart-axis)" }}
           />
           {models.map((model) => (
             <Scatter
@@ -214,7 +214,7 @@ function SystemBarsChart({ rows, metric }: SystemBarsProps) {
       ))}
       <div style={{ display: "flex", gap: 16, marginTop: 8, paddingLeft: 158 }}>
         {GPU_ORDER.map((gpuId) => (
-          <span key={gpuId} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#6b7280" }}>
+          <span key={gpuId} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "var(--text-muted)" }}>
             <span style={{ width: 10, height: 10, borderRadius: 2, background: GPU_COLOR[gpuId], display: "inline-block" }} />
             {GPU_INSTANCES[gpuId].instanceType}
           </span>

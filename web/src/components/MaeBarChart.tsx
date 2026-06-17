@@ -27,7 +27,7 @@ export function MaeBarChart({ matrix }: Props) {
           </div>
         );
       })}
-      <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 8, paddingLeft: 150 }}>
+      <div style={{ fontSize: 10, color: "var(--text-faint)", marginTop: 8, paddingLeft: 150 }}>
         kcal mol⁻¹ — SPICE test set overall MAE 
       </div>
     </div>

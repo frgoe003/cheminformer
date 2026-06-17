@@ -21,6 +21,10 @@ function loadScript(src: string): Promise<void> {
 
 function Spinner() { return <div className="spinner" />; }
 
+function themeSurface() {
+  return getComputedStyle(document.documentElement).getPropertyValue("--surface").trim() || "white";
+}
+
 interface Props {
   height?: number;
   showControls?: boolean;
@@ -46,7 +50,7 @@ export function TrajectoryViewer({ height = 300, showControls = true, url }: Pro
 
         const $3Dmol = (window as any).$3Dmol;
         const viewer = $3Dmol.createViewer(containerRef.current, {
-          backgroundColor: "white",
+          backgroundColor: themeSurface(),
           antialias: true,
           id: "traj-" + Math.random().toString(36).slice(2),
         });
@@ -79,6 +83,19 @@ export function TrajectoryViewer({ height = 300, showControls = true, url }: Pro
     };
   }, []);
 
+  useEffect(() => {
+    const updateViewerBackground = () => {
+      if (viewerRef.current?.setBackgroundColor) {
+        viewerRef.current.setBackgroundColor(themeSurface());
+        viewerRef.current.render();
+      }
+    };
+    const observer = new MutationObserver(updateViewerBackground);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    updateViewerBackground();
+    return () => observer.disconnect();
+  }, []);
+
   function togglePlay() {
     const viewer = viewerRef.current;
     if (!viewer) return;
@@ -92,12 +109,12 @@ export function TrajectoryViewer({ height = 300, showControls = true, url }: Pro
 
   return (
     <div>
-      <div style={{ position: "relative", width: "100%", height, borderRadius: 6, overflow: "hidden", border: "1px solid #f3f4f6" }}>
+      <div style={{ position: "relative", width: "100%", height, borderRadius: 6, overflow: "hidden", border: "1px solid var(--border-soft)" }}>
         {status === "loading" && (
           <div style={{
             position: "absolute", inset: 0, display: "flex", alignItems: "center",
-            justifyContent: "center", gap: 8, background: "#f9fafb",
-            fontSize: 12, color: "#9ca3af", zIndex: 1,
+            justifyContent: "center", gap: 8, background: "var(--surface-subtle)",
+            fontSize: 12, color: "var(--text-faint)", zIndex: 1,
           }}>
             <Spinner /> Loading…
           </div>
@@ -105,8 +122,8 @@ export function TrajectoryViewer({ height = 300, showControls = true, url }: Pro
         {status === "error" && (
           <div style={{
             position: "absolute", inset: 0, display: "flex", alignItems: "center",
-            justifyContent: "center", background: "#fef2f2",
-            fontSize: 11, color: "#ef4444", zIndex: 1,
+            justifyContent: "center", background: "var(--danger-soft)",
+            fontSize: 11, color: "var(--danger)", zIndex: 1,
           }}>
             Failed to load
           </div>
@@ -120,13 +137,13 @@ export function TrajectoryViewer({ height = 300, showControls = true, url }: Pro
             onClick={togglePlay}
             style={{
               padding: "4px 14px", fontSize: 11, fontFamily: "inherit",
-              border: "1.5px solid #e5e7eb", borderRadius: 999,
-              background: "transparent", color: "#374151", cursor: "pointer",
+              border: "1.5px solid var(--border)", borderRadius: 999,
+              background: "transparent", color: "var(--text)", cursor: "pointer",
             }}
           >
             {playing ? "⏸ Pause" : "▶ Play"}
           </button>
-          <span style={{ fontSize: 11, color: "#9ca3af" }}>
+          <span style={{ fontSize: 11, color: "var(--text-faint)" }}>
             chignolin · 138 atoms · 22 frames · UMA-s-1.2
           </span>
         </div>
